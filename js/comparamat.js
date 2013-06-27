@@ -159,7 +159,8 @@
     comparamat.factory('exportService', function () {
         return {
             export: function () {
-                var doc = new LaTeXDocument();
+                var doc = new LaTeXDocument(),
+                    parallelBody;
 
                 doc.utf8 = true;
 
@@ -173,7 +174,12 @@
                 doc.addChild('\\title{HELLO}\n');
                 doc.addChild('\\maketitle\n');
 
-                alert('export');
+                parallelBody = new LaTeXParallel({
+                    leftColumn: $('x-comparamat-text:eq(0) .content').text(),
+                    rightColumn: $('x-comparamat-text:eq(1) .content').text()
+                });
+
+                doc.addChild(parallelBody);
 
                 doc = 'data:application/latex;base64,' + Base64.encode(doc.toLaTeX());
 

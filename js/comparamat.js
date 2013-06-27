@@ -106,7 +106,10 @@
                 );
 
                 $('<div>' + frags.original + '</div>').find('span').each(function () {
-                    var f = new Fragment($(this).text());
+                    var classNames,
+                        f = new Fragment($(this).text()),
+                        i,
+                        length;
 
                     if (this.className !== '') {
                         lastColorIndex += 1;
@@ -115,14 +118,12 @@
                             lastColorIndex = 0;
                         }
                         if (this.className.match(/ /)) { // eg. 'fragmarkx fragmarky'
-                            var classNames = this.className.split(' '),
-                                i,
-                                length;
-
+                            classNames = this.className.split(' ');
                             length = classNames.length;
-                            for (var i = 0; i < length; i += 1) {
+
+                            for (i = 0; i < length; i += 1) {
                                 fragmarks[classNames[i]] = f;
-                            };
+                            }
                         } else {
                             fragmarks[this.className] = f;
                         }
@@ -137,9 +138,6 @@
                         f = new Fragment($(this).text());
 
                     if (this.className !== '') {
-                        if (this.className.match(/ /)) {
-                            console.log(this.className.split(' ')[0]);
-                        }
                         equivalent = fragmarks[this.className];
                         equivalent.equivalent = f;
                         f.color = equivalent.color;

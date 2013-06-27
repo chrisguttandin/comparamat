@@ -159,9 +159,32 @@
     comparamat.factory('exportService', function () {
         return {
             export: function () {
+                var doc = new LaTeXDocument();
+
+                doc.utf8 = true;
+
+                doc.documentClass = 'scrartcl';
+
+                doc.addDocumentClassOption('paper', 'a4');
+                doc.addDocumentClassOption('final');
+                doc.addDocumentClassOption('fontsize', '12pt');
+
+                doc.addChild('\\author{}\n'); // to avoid 'LaTeX Warning: No \author given.'
+                doc.addChild('\\title{HELLO}\n');
+                doc.addChild('\\maketitle\n');
+
                 alert('export');
+
+                doc = 'data:application/latex;base64,' + Base64.encode(doc.toLaTeX());
+
+                var $form = $('<form method="post" action="https://download-data-uri.appspot.com/"></form>');
+
+                $form.append('<input type="hidden" name="filename" value="empty.tex">');
+                $form.append('<input type="hidden" name="data" value="' + doc + '">');
+                $('body').append($form);
+                $form.submit().remove();
             }
-        }
+        };
     });
 
     /**

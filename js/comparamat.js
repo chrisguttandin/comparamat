@@ -114,7 +114,18 @@
                         if (lastColorIndex > 5) {
                             lastColorIndex = 0;
                         }
-                        fragmarks[this.className] = f;
+                        if (this.className.match(/ /)) { // eg. 'fragmarkx fragmarky'
+                            var classNames = this.className.split(' '),
+                                i,
+                                length;
+
+                            length = classNames.length;
+                            for (var i = 0; i < length; i += 1) {
+                                fragmarks[classNames[i]] = f;
+                            };
+                        } else {
+                            fragmarks[this.className] = f;
+                        }
                     }
                     fragments.push(f);
                 });
@@ -126,6 +137,9 @@
                         f = new Fragment($(this).text());
 
                     if (this.className !== '') {
+                        if (this.className.match(/ /)) {
+                            console.log(this.className.split(' ')[0]);
+                        }
                         equivalent = fragmarks[this.className];
                         equivalent.equivalent = f;
                         f.color = equivalent.color;

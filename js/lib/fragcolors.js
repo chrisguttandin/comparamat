@@ -555,7 +555,7 @@ function marcusb_fragcolors_modified(td1, td2, len)
 
         /* Colors have css classes "fragmark1" to "fragmark9" */
         var col = 0;
-        var nr_col = 9;
+        var nr_col = Number.MAX_VALUE; // 9;
         for (var i = 0; i < sims.length; i++)
         {
           var res = sims[i];

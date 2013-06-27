@@ -1,0 +1,15 @@
+<div class="mask">
+    <div class="content" contenteditable></div>
+    <div class="fake-content">
+        <x-comparamat-fragment ng-repeat="fragment in digest.fragments"><span id="{{fragment.id}}" data-ng-class="{
+                'color-one': fragment.color == 1,
+                'color-two': fragment.color == 2,
+                'color-three': fragment.color == 3,
+                'color-four': fragment.color == 4,
+                'color-five': fragment.color == 5,
+                'color-six': fragment.color == 6,
+                'colored': fragment.color > 0
+            }">{{fragment.text}}</span></x-comparamat-fragment>
+    </div>
+</div>
+<input accept="text/plain" data-comparamat-file type="file">

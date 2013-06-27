@@ -155,6 +155,18 @@
     });
 
     /**
+     * Export Service
+     */
+
+    comparamat.factory('exportService', function () {
+        return {
+            export: function () {
+                alert('export');
+            }
+        }
+    });
+
+    /**
      * Selection Service
      */
 
@@ -232,6 +244,7 @@
         DigestList,
         Fragment,
         comparingService,
+        exportService,
         selectionService
     ) {
 
@@ -253,6 +266,9 @@
                 new Fragment('Das funktioniert schon ganz gut. Identische Passagen werden mit der selben Farbe hinterlegt.')
             ])
         ]);
+        $scope.export = function () {
+            exportService.export();
+        }
         // start with a default of 3 words to be the same
         $scope.length = 3;
 

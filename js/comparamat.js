@@ -179,7 +179,7 @@
 
                 var $form = $('<form method="post" action="https://download-data-uri.appspot.com/"></form>');
 
-                $form.append('<input type="hidden" name="filename" value="empty.tex">');
+                $form.append('<input type="hidden" name="filename" value="verglichene-texte-' + new Date().getTime() + '.tex">');
                 $form.append('<input type="hidden" name="data" value="' + doc + '">');
                 $('body').append($form);
                 $form.submit().remove();

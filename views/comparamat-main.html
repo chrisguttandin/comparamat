@@ -1,7 +1,11 @@
-<button data-ng-click="export()">exportieren</button>
-<input id="length" data-ng-model="length" type="number">
-<label for="length">Laufweite</label>
-<button data-ng-click="compare()">jetzt vergleichen</button>
+<nav>
+    <button class="pure-button" data-ng-click="export()">exportieren</button>
+    <div>
+        <label for="length">Laufweite:</label>
+        <input data-ng-model="length" id="length" type="number">
+    </div>
+    <button class="pure-button" data-ng-click="compare()">jetzt vergleichen</button>
+</nav>
 <h1>Vergleiche Texte</h1>
 <ul>
     <li data-ng-repeat="digest in digestList.digests">

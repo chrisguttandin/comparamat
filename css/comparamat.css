@@ -16,6 +16,12 @@ body {
     padding: 0;
 }
 
+nav {
+    float: right;
+    margin: 0 5px;
+    padding: 9px 0 0;
+}
+
 h1 {
     display: block;
     font-family: 'Permanent Marker', cursive;
@@ -25,10 +31,37 @@ h1 {
     padding: 5px 0 0;
 }
 
-button,
-label,
+nav button,
+nav div {
+    float: left;
+}
+
+nav div {
+    background: #F6F6F6;
+    box-shadow: inset 0 0 2px 0 #CCC;
+    border-radius: 2px;
+    display: inline-block;
+    margin: 0 5px;  
+    padding: .5em 1.5em;
+}
+
+nav label,
+nav input {
+    margin: 0;
+    padding: 0;
+}
+
+nav input {
+    background: transparent;
+    border: none;
+    outline: none;
+    text-align: right;
+    width: 2em;
+}
+
+/*label,
 input[type="number"] {
-    float: right;
+    float: left;
     height: 20px;
     margin: 10px 5px;
     position: static;
@@ -65,7 +98,7 @@ label {
 input[type="number"] {
     width: 35px;
     text-align: right;
-}
+}*/
 
 ul {
     bottom: 0;
@@ -121,7 +154,7 @@ div.fake-content {
     display: none;
 }
 
-input {
+ul li input {
     bottom: 0;
     height: 20px;
     margin: 5px;

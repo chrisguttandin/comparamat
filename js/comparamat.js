@@ -261,6 +261,30 @@
         };
     });
 
+
+    /**
+     * <x-comparamat-export/>
+     */
+
+    comparamat.controller('comparamatExportCtrl', function ($scope, $element) {
+        $scope.cancel = function() {
+            $scope.exportHidden = true;
+        }
+
+        $scope.print = function () {
+            $scope.exportHidden = true;
+            window.print();
+        }
+    });
+
+    comparamat.directive('comparamatExport', function () {
+        return {
+            controller: 'comparamatExportCtrl',
+            restrict: 'E',
+            templateUrl: 'views/comparamat-export.html'
+        };
+    });
+
     /**
      * <x-comparamat-main/>
      */
@@ -293,9 +317,19 @@
                 new Fragment('Das funktioniert schon ganz gut. Identische Passagen werden mit der selben Farbe hinterlegt.')
             ])
         ]);
-        $scope.export = function () {
+
+        $scope.download = function () {
+            $scope.exportHidden = true;
             exportService.export();
+        };
+
+        $scope.export = function () {
+            $scope.exportHidden = false;
         }
+
+        // shows or hides the export dialog
+        $scope.exportHidden = true;
+
         // start with a default of 3 words to be the same
         $scope.length = 3;
 
@@ -304,6 +338,8 @@
             fragment: -1,
             offset: -1
         };
+
+        $scope.title = '';
     });
 
     comparamat.directive('comparamatMain', function () {

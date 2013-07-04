@@ -23,12 +23,19 @@ nav {
 }
 
 h1 {
-    display: block;
-    font-family: 'Permanent Marker', cursive;
     font-size: 32px;
     line-height: 38px;
     margin: 0 5px 5px;
     padding: 5px 0 0;
+}
+
+h1.screen-only {
+    display: block;
+    font-family: 'Permanent Marker', cursive;
+}
+
+h1.print-only {
+    display: none;
 }
 
 nav button,
@@ -201,11 +208,64 @@ span.colored {
     box-shadow: 0 0 2px #FFFF00;
 }
 
+#export-background {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+#export-dialog {
+    background-color: #FFF;
+    margin: 30px auto;
+    padding: 10px;
+    width: 50%;
+}
+
+#export-dialog label {
+    display: block;
+    margin: 7px 0;
+}
+
+#export-dialog input {
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    padding: .5em 1.5em;
+    vertical-align: baseline;
+    width: 100%;
+}
+
+#export-dialog label,
+#export-dialog p {
+    color: #000;
+    font-size: 16px;
+}
+
+#export-buttons {
+    margin: 30px 0;
+    display: block;
+}
+
+#export-buttons button:not(:first-child) {
+    margin: 0 0 0 8px;
+    float: right;
+}
+
 @media print {
 
     nav {
         display: none;
-    }    
+    }
+
+    h1.screen-only {
+        display: none;
+    }
+
+    h1.print-only {
+        display: block;
+    }
 
     li {
         background-color: transparent;
@@ -223,6 +283,10 @@ span.colored {
 
     div.content {
         margin: 0!important;
+    }
+
+    #export-background {
+        display: none;
     }
 
 }

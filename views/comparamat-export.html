@@ -1,0 +1,13 @@
+<div data-ng-hide="exportHidden" id="export-background">
+    <form class="pure-form" id="export-dialog">
+        <label for="headline">Lege eine Überschrift für das Dokument fest:</label>
+        <input data-ng-model="title" id="headline" placeholder="Die Überscrhift des Dokumentes">
+        <div id="export-buttons">
+            <button class="pure-button" data-ng-click="cancel()">abrechen</button>
+            <button class="pure-button" data-ng-click="print()">drucken</button>
+            <button class="pure-button" data-ng-click="download()">herunterladen</button>
+        </div>
+        <p>Ein Klick auf "drucken" öffnet den Druckdialog des Browsers. Um die farbig markierten Stellen auszudrucken bitte die Option "Hintergrundfarben und -bilder" im Chrome bzw. "Hintergrundfarben drucken" aktivieren.</p>
+        <p>Ein Klick auf "herunterladen" erzeugt ein LaTeX Dokument und bietet dieses zum Download an.</p>
+    </div>
+</div>

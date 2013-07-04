@@ -158,8 +158,9 @@
 
     comparamat.factory('exportService', function () {
         return {
-            export: function () {
+            export: function (title, filename) {
                 var doc = new LaTeXDocument(),
+                    $form,
                     parallelBody;
 
                 doc.utf8 = true;
@@ -171,7 +172,7 @@
                 doc.addDocumentClassOption('fontsize', '12pt');
 
                 doc.addChild('\\author{}\n'); // to avoid 'LaTeX Warning: No \author given.'
-                doc.addChild('\\title{HELLO}\n');
+                doc.addChild('\\title{' + title + '}\n');
                 doc.addChild('\\maketitle\n');
 
                 parallelBody = new LaTeXParallel({
@@ -183,9 +184,8 @@
 
                 doc = 'data:application/latex;base64,' + Base64.encode(doc.toLaTeX());
 
-                var $form = $('<form method="post" action="https://download-data-uri.appspot.com/"></form>');
-
-                $form.append('<input type="hidden" name="filename" value="verglichene-texte-' + new Date().getTime() + '.tex">');
+                $form = $('<form method="post" action="https://download-data-uri.appspot.com/"></form>');
+                $form.append('<input type="hidden" name="filename" value="' + filename + '">');
                 $form.append('<input type="hidden" name="data" value="' + doc + '">');
                 $('body').append($form);
                 $form.submit().remove();
@@ -266,15 +266,15 @@
      * <x-comparamat-export/>
      */
 
-    comparamat.controller('comparamatExportCtrl', function ($scope, $element) {
+    comparamat.controller('comparamatExportCtrl', function ($scope) {
         $scope.cancel = function() {
             $scope.exportHidden = true;
-        }
+        };
 
         $scope.print = function () {
             $scope.exportHidden = true;
             window.print();
-        }
+        };
     });
 
     comparamat.directive('comparamatExport', function () {
@@ -320,15 +320,17 @@
 
         $scope.download = function () {
             $scope.exportHidden = true;
-            exportService.export();
+            exportService.export($scope.title, $scope.filename);
         };
 
         $scope.export = function () {
             $scope.exportHidden = false;
-        }
+        };
 
         // shows or hides the export dialog
         $scope.exportHidden = true;
+
+        $scope.filename = 'verglichene-texte-' + new Date().getTime() + '.tex';
 
         // start with a default of 3 words to be the same
         $scope.length = 3;

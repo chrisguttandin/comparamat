@@ -1,7 +1,9 @@
 <div data-ng-hide="exportHidden" id="export-background">
     <form class="pure-form" id="export-dialog">
-        <label for="headline">Lege eine Überschrift für das Dokument fest:</label>
-        <input data-ng-model="title" id="headline" placeholder="Die Überscrhift des Dokumentes">
+        <label for="title">Lege eine Überschrift für das Dokument fest:</label>
+        <input data-ng-model="title" id="title" placeholder="Die Überschrift des Dokumentes">
+        <label for="filename">Lege einen Dateinamen für den Download fest:</label>
+        <input data-ng-model="filename" id="filename" placeholder="Der Dateiname des Dokumentes">
         <div id="export-buttons">
             <button class="pure-button" data-ng-click="cancel()">abrechen</button>
             <button class="pure-button" data-ng-click="print()">drucken</button>

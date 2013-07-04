@@ -384,7 +384,8 @@
                 var $content = element.find('.content'),
                     contentHeight,
                     counter = 0,
-                    $fakeContent = element.find('.fake-content');
+                    $fakeContent = element.find('.fake-content'),
+                    scrollTopBeforePrinting;
 //                    selectedDigest,
 //                    totalOffset;
 
@@ -430,6 +431,16 @@
                     }.bind(null, counter), 1);
                 });
 
+                element.children().first().bind('scroll', function () {
+                    scrollTopBeforePrinting = $(this).scrollTop();
+                });
+
+                window.matchMedia('print').addListener(function(mql) {
+                    if (!mql.matches) { // aka after printing
+                        element.children().first().scrollTop(scrollTopBeforePrinting);
+                    }
+                });
+
                 $scope.compare();
 
                 contentHeight = $content.height();
@@ -438,6 +449,7 @@
                     'margin-top': contentHeight + 'px'
                 });
                 element.children().first().scrollTop(contentHeight);
+                scrollTopBeforePrinting = contentHeight;
             },
             restrict: 'E',
             templateUrl: 'views/comparamat-text.html'

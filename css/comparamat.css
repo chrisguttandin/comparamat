@@ -200,3 +200,29 @@ span.colored {
     background-color: #FFFF00; /* GELB */
     box-shadow: 0 0 2px #FFFF00;
 }
+
+@media print {
+
+    nav {
+        display: none;
+    }    
+
+    li {
+        background-color: transparent;
+        border: none;
+    }
+
+    li input {
+        display: none;
+    }
+
+    div.mask {
+        border: none;
+        overflow-y: auto;
+    }
+
+    div.content {
+        margin: 0!important;
+    }
+
+}

@@ -93,61 +93,63 @@
 
     comparamat.factory('comparingService', function (Fragment) {
         return {
-            compare: function (digests, length) {
-                var fragmarks = [],
-                    fragments = [],
-                    frags,
-                    lastColorIndex = 0;
+            compare: function (digests, length, callback) {
+                setTimeout(function () {
+                    var fragmarks = [],
+                        fragments = [],
+                        frags,
+                        lastColorIndex = 0;
 
-                frags = marcusb_fragcolors_modified(
-                    $('<div>' + digests[0].getText() + '</div>'),
-                    $('<div>' + digests[1].getText() + '</div>'),
-                    length
-                );
+                    frags = marcusb_fragcolors_modified(
+                        $('<div>' + digests[0].getText() + '</div>'),
+                        $('<div>' + digests[1].getText() + '</div>'),
+                        length
+                    );
 
-                $('<div>' + frags.original + '</div>').find('span').each(function () {
-                    var classNames,
-                        f = new Fragment($(this).text()),
-                        i,
-                        length;
+                    $('<div>' + frags.original + '</div>').find('span').each(function () {
+                        var classNames,
+                            f = new Fragment($(this).text()),
+                            i,
+                            length;
 
-                    if (this.className !== '') {
-                        lastColorIndex += 1;
-                        f.color = lastColorIndex;
-                        if (lastColorIndex > 5) {
-                            lastColorIndex = 0;
-                        }
-                        if (this.className.match(/ /)) { // eg. 'fragmarkx fragmarky'
-                            classNames = this.className.split(' ');
-                            length = classNames.length;
-
-                            for (i = 0; i < length; i += 1) {
-                                fragmarks[classNames[i]] = f;
+                        if (this.className !== '') {
+                            lastColorIndex += 1;
+                            f.color = lastColorIndex;
+                            if (lastColorIndex > 5) {
+                                lastColorIndex = 0;
                             }
-                        } else {
-                            fragmarks[this.className] = f;
+                            if (this.className.match(/ /)) { // eg. 'fragmarkx fragmarky'
+                                classNames = this.className.split(' ');
+                                length = classNames.length;
+
+                                for (i = 0; i < length; i += 1) {
+                                    fragmarks[classNames[i]] = f;
+                                }
+                            } else {
+                                fragmarks[this.className] = f;
+                            }
                         }
-                    }
-                    fragments.push(f);
-                });
-                digests[0].fragments = fragments;
+                        fragments.push(f);
+                    });
+                    digests[0].fragments = fragments;
 
-                fragments = [];
-                $('<div>' + frags.plagiarism + '</div>').find('span').each(function () {
-                    var equivalent,
-                        f = new Fragment($(this).text());
+                    fragments = [];
+                    $('<div>' + frags.plagiarism + '</div>').find('span').each(function () {
+                        var equivalent,
+                            f = new Fragment($(this).text());
 
-                    if (this.className !== '') {
-                        equivalent = fragmarks[this.className];
-                        equivalent.equivalent = f;
-                        f.color = equivalent.color;
-                        f.equivalent = equivalent;
-                    }
-                    fragments.push(f);
-                });
-                digests[1].fragments = fragments;
+                        if (this.className !== '') {
+                            equivalent = fragmarks[this.className];
+                            equivalent.equivalent = f;
+                            f.color = equivalent.color;
+                            f.equivalent = equivalent;
+                        }
+                        fragments.push(f);
+                    });
+                    digests[1].fragments = fragments;
 
-                return digests;
+                    callback(digests);
+                }, 1);
             }
         };
     });
@@ -300,15 +302,32 @@
     ) {
 
         $scope.compare = function () {
-            $scope.selection = selectionService.detect();
-            if ($scope.$$phase) {
-                $scope.digestList.digests = comparingService.compare($scope.digestList.digests, $scope.length);
-            } else {
-                $scope.$apply(function () {
-                    $scope.digestList.digests = comparingService.compare($scope.digestList.digests, $scope.length);
+            if (!$scope.comparing) {
+                $scope.comparing = true;
+                $scope.selection = selectionService.detect();
+            
+                comparingService.compare($scope.digestList.digests, $scope.length, function(digests) {
+                    if ($scope.$$phase) {
+                        $scope.digestList.digests = digests;
+                        setTimeout(function () {
+                            $scope.comparing = false;
+                        }, 1000);
+                    } else {
+                        $scope.$apply(function () {
+                            $scope.digestList.digests = digests;
+                            setTimeout(function () {
+                                $scope.$apply(function () {
+                                    $scope.comparing = false;
+                                });
+                            }, 1000);
+                        });
+                    }
                 });
             }
         };
+
+        $scope.comparing = false;
+
         $scope.digestList = new DigestList([
             new Digest([
                 new Fragment('Kopiere die zu vergleichenden Texte in die Textfelder. Identische Passagen werden mit der selben Farbe hinterlegt. Durch einen Klick auf die farbigen Stellen wird die gefundene Übereinstimmung im gegenüberliegenden Feld angezeigt.')

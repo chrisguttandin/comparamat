@@ -4,7 +4,7 @@
         <label for="length">Laufweite:</label>
         <input data-ng-model="length" id="length" type="number">
     </div>
-    <button class="pure-button" data-ng-click="compare()">jetzt vergleichen</button>
+    <button class="pure-button" data-ng-click="compare()" data-ng-disabled="comparing">jetzt vergleichen</button>
 </nav>
 <h1 class="print-only">{{title}}</h1>
 <h1 class="screen-only">Vergleiche Texte</h1>

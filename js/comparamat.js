@@ -376,6 +376,8 @@
      */
 
     comparamat.controller('comparamatFileCtrl', function ($scope, Fragment) {
+        $scope.path = '';
+
         $scope.read = function (file) {
             var reader = new FileReader();
 
@@ -387,6 +389,7 @@
                     //$scope.compare();
                 };
                 reader.readAsText(file);
+                $scope.path = file.name;
             } else {
                 alert('Dateien vom Typ "' + (file.type || 'unbekannt') + '" können leider nicht gelesen werden.\nBitte verwende einfache Textdateien vom Typ "text/plain".\n\nDanke.');
             }
@@ -414,6 +417,10 @@
      */
 
     comparamat.controller('comparamatTextCtrl', function ($scope, $element, selectionService) {
+        $scope.clickFileInput = function () {
+            $element.find('input[type=file]').click();
+        };
+
         $scope.focus = function(id) {
             var $equivalent,
                 fragment,

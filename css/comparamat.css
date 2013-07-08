@@ -293,7 +293,9 @@ span.colored {
     }
 
     ul {
+        bottom: auto;
         overflow: visible;
+        position: static;
     }
 
     li {
@@ -301,6 +303,8 @@ span.colored {
         border: none;
         display: inline-block;
         float: none;
+        height: auto;
+        position: static;
         vertical-align: top;
     }
 
@@ -313,6 +317,7 @@ span.colored {
     div.mask {
         border: none;
         overflow: visible;
+        position: static;
     }
 
     div.content {

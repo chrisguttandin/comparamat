@@ -272,6 +272,14 @@ span.colored {
 
 @media print {
 
+    html {
+        height: auto;
+    }
+
+    body {
+        height: auto;
+    }
+
     nav {
         display: none;
     }
@@ -284,21 +292,31 @@ span.colored {
         display: block;
     }
 
+    ul {
+        overflow: visible;
+    }
+
     li {
         background-color: transparent;
         border: none;
+        display: inline-block;
+        float: none;
+        vertical-align: top;
     }
 
-    li input {
+    x-comparamat-text > button.pure-button,
+    x-comparamat-text > input,
+    x-comparamat-text > span {
         display: none;
     }
 
     div.mask {
         border: none;
-        overflow-y: auto;
+        overflow: visible;
     }
 
     div.content {
+        box-shadow: none;
         margin: 0!important;
     }
 

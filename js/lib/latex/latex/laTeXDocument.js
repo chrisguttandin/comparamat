@@ -101,8 +101,10 @@ var LaTeXDocument = (function ($, p) {
                 laTeXBody += p.addLineBreak('\\bibliographystyle{amsplain}');
                 laTeXBody += p.addLineBreak('\\bibliography{bibliography}');
             }
-            laTeXBody += p.addLineBreak('\\listoffigures');
-            laTeXBody += p.addLineBreak('\\listoftables');
+            // @ todo only when there are figures
+            //laTeXBody += p.addLineBreak('\\listoffigures');
+            // @ todo only when there are tables
+            //laTeXBody += p.addLineBreak('\\listoftables');
             laTeXBody += p.addLineBreak('\\end{document}');
 
             return laTeXBody;

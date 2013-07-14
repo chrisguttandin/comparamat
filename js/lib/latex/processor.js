@@ -56,10 +56,17 @@ var Processor = (function ($) {
             },
 
             escapeLaTexCharacters: function (text) {
+                // http://www.personal.ceu.hu/tex/specchar.htm
                 return text.replace(/-/g, '--')
                     .replace(/\$/g, '\\$')
                     .replace(/%/g, '\\%')
-                    .replace(/\^/g, '\\textasciicircum');
+                    .replace(/\^/g, '\\textasciicircum')
+                    .replace(/#/g, '\\#')
+                    .replace(/&/g, '\\&')
+                    .replace(/~/g, '\\~')
+                    .replace(/\\/g, '$\\backslash$')
+                    .replace(/\{/g, '\\}')
+                    .replace(/\}/g, '\\}');
             },
 
             process: function (text, functions) {

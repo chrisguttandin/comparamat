@@ -371,7 +371,7 @@
             if (!$scope.comparing) {
                 $scope.comparing = true;
                 $scope.selection = selectionService.detect();
-            
+
                 comparingService.compare($scope.digestList.digests, $scope.length, function(digests) {
                     if ($scope.$$phase) {
                         $scope.digestList.digests = digests;

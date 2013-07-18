@@ -67,7 +67,7 @@ nav input {
 }
 
 ul {
-    bottom: 0;
+    bottom: 39px;
     clear: both;
     float: none;
     list-style: none;
@@ -184,7 +184,14 @@ span.colored {
     box-shadow: 0 0 2px #FFFF00;
 }
 
-#export-background {
+footer {
+    bottom: 0;
+    padding: 5px;
+    position: absolute;
+}
+
+#export-background,
+#imprint-background {
     background-color: rgba(0, 0, 0, 0.5);
     height: 100%;
     left: 0;
@@ -193,7 +200,8 @@ span.colored {
     width: 100%;
 }
 
-#export-dialog {
+#export-dialog,
+#imprint-dialog {
     background-color: #FFF;
     margin: 30px auto;
     padding: 10px;

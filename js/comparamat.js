@@ -312,7 +312,6 @@
         };
     });
 
-
     /**
      * <x-comparamat-export/>
      */
@@ -333,6 +332,24 @@
             controller: 'comparamatExportCtrl',
             restrict: 'E',
             templateUrl: 'views/comparamat-export.html'
+        };
+    });
+
+    /**
+     * <x-comparamat-imprint/>
+     */
+
+    comparamat.controller('comparamatImprintCtrl', function ($scope) {
+        $scope.hide = function() {
+            $scope.imprintHidden = true;
+        };
+    });
+
+    comparamat.directive('comparamatImprint', function () {
+        return {
+            controller: 'comparamatImprintCtrl',
+            restrict: 'E',
+            templateUrl: 'views/comparamat-imprint.html'
         };
     });
 
@@ -400,6 +417,9 @@
 
         $scope.filename = 'verglichene-texte-' + new Date().getTime() + '.tex';
 
+        // shows or hides the imprint popup
+        $scope.imprintHidden = true;
+
         // start with a default of 3 words to be the same
         $scope.length = 3;
 
@@ -407,6 +427,10 @@
         $scope.selection = {
             fragment: -1,
             offset: -1
+        };
+
+        $scope.showImprint = function () {
+            $scope.imprintHidden = false;
         };
 
         $scope.title = '';

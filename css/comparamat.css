@@ -237,6 +237,21 @@ footer {
     float: right;
 }
 
+#imprint-dialog ul {
+    position: static;
+    bottom: auto;
+    top: auto;
+    width: auto;
+}
+
+#imprint-dialog li {
+    background-color: transparent;
+    border: none;
+    float: none;
+    height: auto;
+    width: auto;
+}
+
 @media print {
 
     html {

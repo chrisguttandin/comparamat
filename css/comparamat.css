@@ -287,6 +287,22 @@ footer {
         vertical-align: top;
     }
 
+    li:not(:first-child) {
+        left: 50%;
+    }
+
+    .firefox ul {
+        position: relative;
+    }
+
+    .firefox li {
+        position: absolute;
+    }
+
+    .firefox li:not(:first-child) {
+        left: 50%;
+    }
+
     x-comparamat-text > button.pure-button,
     x-comparamat-text > input,
     x-comparamat-text > span {

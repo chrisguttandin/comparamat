@@ -437,6 +437,11 @@
     });
 
     comparamat.directive('comparamatMain', function () {
+
+        if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+            $('body').addClass('firefox');
+        }
+
         return {
             controller: 'comparamatMainCtrl',
             restrict: 'E',

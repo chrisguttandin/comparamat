@@ -423,6 +423,10 @@
         // start with a default of 3 words to be the same
         $scope.length = 3;
 
+        $scope.leftColumnTitle = '';
+
+        $scope.rightColumnTitle = '';
+
         // start with an empty selection
         $scope.selection = {
             fragment: -1,

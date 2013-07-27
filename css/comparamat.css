@@ -34,7 +34,8 @@ h1.screen-only {
     font-family: 'Permanent Marker', cursive;
 }
 
-h1.print-only {
+h1.print-only,
+h2.print-only {
     display: none;
 }
 
@@ -272,6 +273,12 @@ footer {
 
     h1.print-only {
         display: block;
+    }
+
+    h2.print-only {
+        display: inline-block;
+        padding: 0 5px;
+        width: 50%;
     }
 
     ul {

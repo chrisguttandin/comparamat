@@ -193,7 +193,7 @@
         }
 
         return {
-            export: function (title, filename) {
+            export: function (title, leftColumnTitle, rightColumnTitle, filename) {
                 var doc = new LaTeXDocument(),
                     $form,
                     p = Processor,
@@ -210,6 +210,11 @@
                 doc.addChild(new LaTeXAuthor()); // to avoid 'LaTeX Warning: No \author given.'
                 doc.addChild(new LaTeXTitle({
                     title: title
+                }));
+
+                doc.addChild(new LaTeXParallel({
+                    leftColumn: leftColumnTitle,
+                    rightColumn: rightColumnTitle
                 }));
 
                 parallelBody = new LaTeXParallel({
@@ -405,7 +410,7 @@
 
         $scope.download = function () {
             $scope.exportHidden = true;
-            exportService.export($scope.title, $scope.filename);
+            exportService.export($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle, $scope.filename);
         };
 
         $scope.export = function () {

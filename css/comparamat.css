@@ -238,6 +238,18 @@ footer {
     float: right;
 }
 
+#imprint-dialog h2 {
+    font-size: 26px;
+    line-height: 32px;
+    margin: 0 5px 5px;
+    padding: 5px 0 0;
+}
+
+#imprint-dialog p {
+    font-size: 16px;
+    margin: 0 5px 5px;
+}
+
 #imprint-dialog ul {
     position: static;
     bottom: auto;

@@ -207,7 +207,7 @@
 
             l.addOption('paper', 'a4');
             l.addOption('final');
-            l.addOption('fontsize', '12pt');
+            l.addOption('fontsize', '11pt');
 
             l.addChild(latex.author(''));
             l.addChild(latex.title(title));

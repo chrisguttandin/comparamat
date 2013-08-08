@@ -1,4 +1,4 @@
-comparamat
+textaposer
 ==========
 
 eine AngularJS App zum Vergleichen von Texten

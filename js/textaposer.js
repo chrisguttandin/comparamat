@@ -11,9 +11,9 @@
 
     'use strict';
 
-    var comparamat = angular.module('comparamat', []);
+    var textaposer = angular.module('textaposer', []);
 
-    comparamat.factory('Digest', function () {
+    textaposer.factory('Digest', function () {
         function Digest(fragments) {
             this.fragments = fragments;
         }
@@ -59,7 +59,7 @@
         return Digest;
     });
 
-    comparamat.factory('DigestList', function () {
+    textaposer.factory('DigestList', function () {
         function DigestList(digests) {
             this.digests = digests;
             this.date = new Date().getTime();
@@ -68,7 +68,7 @@
         return DigestList;
     });
 
-    comparamat.factory('Fragment', function () {
+    textaposer.factory('Fragment', function () {
         function Fragment(text) {
             this.color = 0;
             this.id = (function () {
@@ -93,7 +93,7 @@
      * Comparing Service
      */
 
-    comparamat.factory('comparingService', function (Fragment) {
+    textaposer.factory('comparingService', function (Fragment) {
         return {
             compare: function (digests, length, callback) {
                 setTimeout(function () {
@@ -160,7 +160,7 @@
      * Export Service
      */
 
-    comparamat.factory('exportService', function () {
+    textaposer.factory('exportService', function () {
         function buildContainer($element) {
             var container = latex.container();
 
@@ -216,8 +216,8 @@
                 rightColumnTitle
             ]));
             l.addChild(latex.parallel([
-                buildContainer($('x-comparamat-text:eq(0) .content span')),
-                buildContainer($('x-comparamat-text:eq(1) .content span'))
+                buildContainer($('x-textaposer-text:eq(0) .content span')),
+                buildContainer($('x-textaposer-text:eq(1) .content span'))
             ]));
 
             return l.toLaTeX();
@@ -254,7 +254,7 @@
      * Selection Service
      */
 
-    comparamat.factory('selectionService', function () {
+    textaposer.factory('selectionService', function () {
         return {
             detect: function () {
                 var $current,
@@ -293,7 +293,7 @@
                 var remainingOffset = selection.offset;
 
                 if (selection.fragment > 1 && remainingOffset > -1) {
-                    $('x-comparamat-text:eq(' + selection.fragment + ') .content').contents().each(function () {
+                    $('x-textaposer-text:eq(' + selection.fragment + ') .content').contents().each(function () {
                         var length = $(this).text().length,
                             range,
                             startContainer,
@@ -319,10 +319,10 @@
     });
 
     /**
-     * <x-comparamat-export/>
+     * <x-textaposer-export/>
      */
 
-    comparamat.controller('comparamatExportCtrl', function ($scope) {
+    textaposer.controller('textaposerExportCtrl', function ($scope) {
         $scope.cancel = function() {
             $scope.exportHidden = true;
         };
@@ -333,37 +333,37 @@
         };
     });
 
-    comparamat.directive('comparamatExport', function () {
+    textaposer.directive('textaposerExport', function () {
         return {
-            controller: 'comparamatExportCtrl',
+            controller: 'textaposerExportCtrl',
             restrict: 'E',
-            templateUrl: 'views/comparamat-export.html'
+            templateUrl: 'views/textaposer-export.html'
         };
     });
 
     /**
-     * <x-comparamat-imprint/>
+     * <x-textaposer-imprint/>
      */
 
-    comparamat.controller('comparamatImprintCtrl', function ($scope) {
+    textaposer.controller('textaposerImprintCtrl', function ($scope) {
         $scope.hide = function() {
             $scope.imprintHidden = true;
         };
     });
 
-    comparamat.directive('comparamatImprint', function () {
+    textaposer.directive('textaposerImprint', function () {
         return {
-            controller: 'comparamatImprintCtrl',
+            controller: 'textaposerImprintCtrl',
             restrict: 'E',
-            templateUrl: 'views/comparamat-imprint.html'
+            templateUrl: 'views/textaposer-imprint.html'
         };
     });
 
     /**
-     * <x-comparamat-main/>
+     * <x-textaposer-main/>
      */
 
-    comparamat.controller('comparamatMainCtrl', function (
+    textaposer.controller('textaposerMainCtrl', function (
         $scope,
         Digest,
         DigestList,
@@ -451,24 +451,24 @@
         $scope.title = '';
     });
 
-    comparamat.directive('comparamatMain', function () {
+    textaposer.directive('textaposerMain', function () {
 
         if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
             $('body').addClass('firefox');
         }
 
         return {
-            controller: 'comparamatMainCtrl',
+            controller: 'textaposerMainCtrl',
             restrict: 'E',
-            templateUrl: 'views/comparamat-main.html'
+            templateUrl: 'views/textaposer-main.html'
         };
     });
 
     /**
-     * <x-comparamat-file/>
+     * <x-textaposer-file/>
      */
 
-    comparamat.controller('comparamatFileCtrl', function ($scope, Fragment) {
+    textaposer.controller('textaposerFileCtrl', function ($scope, Fragment) {
         $scope.path = '';
 
         $scope.read = function (file) {
@@ -489,9 +489,9 @@
         };
     });
 
-    comparamat.directive('comparamatFile', function() {
+    textaposer.directive('textaposerFile', function() {
         return {
-            controller: 'comparamatFileCtrl',
+            controller: 'textaposerFileCtrl',
             link: function($scope, element) {
                 element.bind('change', function (event) {
                     var file = event.target.files[0];
@@ -506,10 +506,10 @@
     });
 
     /**
-     * <x-comparamat-text/>
+     * <x-textaposer-text/>
      */
 
-    comparamat.controller('comparamatTextCtrl', function ($scope, $element, selectionService) {
+    textaposer.controller('textaposerTextCtrl', function ($scope, $element, selectionService) {
         $scope.clickFileInput = function () {
             $element.find('input[type=file]').click();
         };
@@ -534,9 +534,9 @@
         };
     });
 
-    comparamat.directive('comparamatText', function () {
+    textaposer.directive('textaposerText', function () {
         return {
-            controller: 'comparamatTextCtrl',
+            controller: 'textaposerTextCtrl',
             link: function ($scope, element) {
                 var $content = element.find('.content'),
                     contentHeight,
@@ -567,8 +567,8 @@
                             $content[0].innerHTML = $fakeContent
                                 .html()
                                 .replace(/<!--(.*?)-->/g, '')
-                                .replace(/<x-comparamat-fragment(.*?)>/g, '')
-                                .replace(/<\/x-comparamat-fragment>/g, '')
+                                .replace(/<x-textaposer-fragment(.*?)>/g, '')
+                                .replace(/<\/x-textaposer-fragment>/g, '')
 
                                 // removing whitespace is necesarry to keep track of the current selection
                                 // remove trailing whitespace
@@ -609,7 +609,7 @@
                 scrollTopBeforePrinting = contentHeight;
             },
             restrict: 'E',
-            templateUrl: 'views/comparamat-text.html'
+            templateUrl: 'views/textaposer-text.html'
         };
     });
 

@@ -1,7 +1,7 @@
 <div class="mask">
     <div class="content" contenteditable></div>
     <div class="fake-content">
-        <x-comparamat-fragment ng-repeat="fragment in digest.fragments"><span id="{{fragment.id}}" data-ng-class="{
+        <x-textaposer-fragment ng-repeat="fragment in digest.fragments"><span id="{{fragment.id}}" data-ng-class="{
                 'color-one': fragment.color == 1,
                 'color-two': fragment.color == 2,
                 'color-three': fragment.color == 3,
@@ -9,9 +9,9 @@
                 'color-five': fragment.color == 5,
                 'color-six': fragment.color == 6,
                 'colored': fragment.color > 0
-            }">{{fragment.text}}</span></x-comparamat-fragment>
+            }">{{fragment.text}}</span></x-textaposer-fragment>
     </div>
 </div>
 <button class="pure-button" data-ng-click="clickFileInput()">Datei ausw&auml;hlen</button>
 <span>{{path}}</span>
-<input accept="text/plain" data-comparamat-file type="file">
+<input accept="text/plain" data-textaposer-file type="file">

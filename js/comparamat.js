@@ -160,30 +160,34 @@
 
     comparamat.factory('exportService', function () {
         function buildContainer($element) {
-            var container = new LaTeXContainer();
+            var container = latex.container();
 
             $element.each(function () {
                 if (this.className.match(/colored/)) {
                     var color = $(this).css('background-color'),
-                        colorName,
-                        colorResult;
+                        name,
+                        result,
+                        values;
 
                     if (/^rgb\([0-9]+, [0-9]+, [0-9]+\)/.test(color)) {
-                        colorResult = /^rgb\(([0-9]+), ([0-9]+), ([0-9]+)\)/.exec(color);
-                        color = colorResult.slice(1);
+                        result = /^rgb\(([0-9]+), ([0-9]+), ([0-9]+)\)/.exec(color);
+                        values = result.slice(1);
                     } else if (/^rgba\([0-9]+, [0-9]+, [0-9]+, [0-9]+\)/.test(color)) {
-                        colorResult = /^rgba\(([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)\)/.exec(color);
-                        color = colorResult.slice(1, -1);
+                        result = /^rgba\(([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)\)/.exec(color);
+                        values = result.slice(1, -1);
+                    } else {
+                        return; // unknown color
                     }
 
-                    colorName = this.className.match(/color\-[a-z]+/)[0].replace(/\-[a-z]/, function (match) {
+                    name = this.className.match(/color\-[a-z]+/)[0].replace(/\-[a-z]/, function (match) {
                         return match[1].toUpperCase();
                     });
 
-                    container.addChild(new LaTeXColorText({
-                        color: color,
-                        colorName: colorName,
-                        child: $(this).text()
+                    container.addChild(latex.textcolor($(this).text(), {
+                        color: {
+                            name: name,
+                            values: values
+                        }
                     }));
                 } else {
                     container.addChild($(this).text());
@@ -194,55 +198,34 @@
 
         return {
             export: function (title, leftColumnTitle, rightColumnTitle, filename) {
-                var doc = new LaTeXDocument(),
+                var dataURI,
                     $form,
-                    p = Processor,
-                    parallelBody;
+                    l = latex();
 
-                doc.utf8 = true;
+                l.utf8 = true;
 
-                doc.documentClass = 'scrartcl';
+                l.style = 'scrartcl';
 
-                doc.addDocumentClassOption('paper', 'a4');
-                doc.addDocumentClassOption('final');
-                doc.addDocumentClassOption('fontsize', '12pt');
+                l.addOption('paper', 'a4');
+                l.addOption('final');
+                l.addOption('fontsize', '12pt');
 
-                doc.addChild(new LaTeXAuthor()); // to avoid 'LaTeX Warning: No \author given.'
-                doc.addChild(new LaTeXTitle({
-                    title: title
-                }));
+                l.addChild(latex.author(''));
+                l.addChild(latex.title(title));
+                l.addChild(latex.parallel([
+                    leftColumnTitle,
+                    rightColumnTitle
+                ]));
+                l.addChild(latex.parallel([
+                    buildContainer($('x-comparamat-text:eq(0) .content span')),
+                    buildContainer($('x-comparamat-text:eq(1) .content span'))
+                ]));
 
-                doc.addChild(new LaTeXParallel({
-                    leftColumn: leftColumnTitle,
-                    rightColumn: rightColumnTitle
-                }));
-
-                parallelBody = new LaTeXParallel({
-                    leftColumn: buildContainer($('x-comparamat-text:eq(0) .content span')),
-                    rightColumn: buildContainer($('x-comparamat-text:eq(1) .content span'))
-                });
-
-                doc.addChild(parallelBody);
-
-                doc.process([
-                    p.escapeLaTexCharacters,
-                    p.convertWikiaSyntax,
-                    p.convertBrackets,
-                    p.convertDots,
-                    p.convertHtmlDashes,
-                    p.convertHtmlEntities,
-                    p.convertHtmlTags,
-                    p.convertHtmlQuotes,
-                    p.convertQuotes,
-                    p.convertUnderscores,
-                    p.removeHtmlTags
-                ]);
-
-                doc = 'data:application/latex;base64,' + Base64.encode(doc.toLaTeX());
+                dataURI = 'data:application/latex;base64,' + Base64.encode(l.toLaTeX());
 
                 $form = $('<form method="post" action="https://download-data-uri.appspot.com/"></form>');
                 $form.append('<input type="hidden" name="filename" value="' + filename + '">');
-                $form.append('<input type="hidden" name="data" value="' + doc + '">');
+                $form.append('<input type="hidden" name="data" value="' + dataURI + '">');
                 $('body').append($form);
                 $form.submit().remove();
             }

@@ -1,6 +1,8 @@
 /*global
     angular,
+    Base64,
     FileReader,
+    latex,
     marcusb_fragcolors_modified,
     $
 */
@@ -196,36 +198,52 @@
             return container;
         }
 
+        function buildDocument(title, leftColumnTitle, rightColumnTitle) {
+            var l = latex();
+
+            l.utf8 = true;
+
+            l.style = 'scrartcl';
+
+            l.addOption('paper', 'a4');
+            l.addOption('final');
+            l.addOption('fontsize', '12pt');
+
+            l.addChild(latex.author(''));
+            l.addChild(latex.title(title));
+            l.addChild(latex.parallel([
+                leftColumnTitle,
+                rightColumnTitle
+            ]));
+            l.addChild(latex.parallel([
+                buildContainer($('x-comparamat-text:eq(0) .content span')),
+                buildContainer($('x-comparamat-text:eq(1) .content span'))
+            ]));
+
+            return l.toLaTeX();
+        }
+
         return {
-            export: function (title, leftColumnTitle, rightColumnTitle, filename) {
+            download: function (title, leftColumnTitle, rightColumnTitle, filename) {
                 var dataURI,
-                    $form,
-                    l = latex();
+                    doc = buildDocument(title, leftColumnTitle, rightColumnTitle),
+                    $form;
 
-                l.utf8 = true;
-
-                l.style = 'scrartcl';
-
-                l.addOption('paper', 'a4');
-                l.addOption('final');
-                l.addOption('fontsize', '12pt');
-
-                l.addChild(latex.author(''));
-                l.addChild(latex.title(title));
-                l.addChild(latex.parallel([
-                    leftColumnTitle,
-                    rightColumnTitle
-                ]));
-                l.addChild(latex.parallel([
-                    buildContainer($('x-comparamat-text:eq(0) .content span')),
-                    buildContainer($('x-comparamat-text:eq(1) .content span'))
-                ]));
-
-                dataURI = 'data:application/latex;base64,' + Base64.encode(l.toLaTeX());
+                dataURI = 'data:application/latex;base64,' + Base64.encode(doc);
 
                 $form = $('<form method="post" action="https://download-data-uri.appspot.com/"></form>');
                 $form.append('<input type="hidden" name="filename" value="' + filename + '">');
                 $form.append('<input type="hidden" name="data" value="' + dataURI + '">');
+                $('body').append($form);
+                $form.submit().remove();
+            },
+            open: function (title, leftColumnTitle, rightColumnTitle) {
+                var doc = buildDocument(title, leftColumnTitle, rightColumnTitle),
+                    $form;
+
+                $form = $('<form action="https://www.writelatex.com/docs" method="post" target="_blank">');
+                $form.append('<textarea name="snip">' + doc + '</textarea>');
+                $form.append('<input checked name="splash" type="checkbox" value="none">');
                 $('body').append($form);
                 $form.submit().remove();
             }
@@ -393,7 +411,7 @@
 
         $scope.download = function () {
             $scope.exportHidden = true;
-            exportService.export($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle, $scope.filename);
+            exportService.download($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle, $scope.filename);
         };
 
         $scope.export = function () {
@@ -412,6 +430,11 @@
         $scope.length = 3;
 
         $scope.leftColumnTitle = '';
+
+        $scope.open = function () {
+            $scope.exportHidden = true;
+            exportService.open($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle);
+        };
 
         $scope.rightColumnTitle = '';
 

@@ -1,3 +1,8 @@
+<div class="mini-map">
+    <svg preserveAspectRatio="none" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect ng-repeat="rectangle in digest.rectangles" fill="{{rectangle.fill}}" height="{{rectangle.height}}" width="{{rectangle.width}}" x="{{rectangle.x}}" y="{{rectangle.y}}"/>
+    </svg>
+</div>
 <div class="mask">
     <div class="content" contenteditable></div>
     <div class="fake-content">

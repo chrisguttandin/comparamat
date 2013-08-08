@@ -14,8 +14,9 @@
     var textaposer = angular.module('textaposer', []);
 
     textaposer.factory('Digest', function () {
-        function Digest(fragments) {
+        function Digest(fragments, rectangles) {
             this.fragments = fragments;
+            this.rectangles = rectangles;
         }
 
         Digest.prototype.getAbsoluteOffset = function (id, offset) {
@@ -87,6 +88,18 @@
         }
 
         return Fragment;
+    });
+
+    textaposer.factory('Rectangle', function () {
+        function Rectangle(height, width, x, y, fill) {
+            this.height = height;
+            this.width = width;
+            this.x = x;
+            this.y = y;
+            this.fill = fill;
+        }
+
+        return Rectangle;
     });
 
     /**
@@ -368,10 +381,112 @@
         Digest,
         DigestList,
         Fragment,
+        Rectangle,
         comparingService,
         exportService,
         selectionService
     ) {
+        function normalize(value, min, max) {
+            value = Math.round(value * 10000) / 100;
+            if (value < min) {
+                return min;
+            }
+            if (value > max) {
+                return max;
+            }
+            return value;
+        }
+        function updateMiniMap($content, digest) {
+            var height = $content.height(),
+                rectangles = [],
+                topHeight = $content.parent().height(),
+                topScrollTop = $content.parent().scrollTop(),
+                width = $content.width();
+
+            digest.rectangles = rectangles;
+
+            $content.find('span.colored').each(function () {
+                var color = $(this).css('background-color'),
+                    currentTop,
+                    $dummy = $('<span></span>'),
+                    lineHeight,
+                    nextPosition,
+                    ownPosition;
+
+                ownPosition = $dummy.insertBefore(this).position();
+                ownPosition.top -= topHeight - topScrollTop;
+                lineHeight = $dummy.height();
+                if (lineHeight <= 1) {
+                    lineHeight = 1;
+                }
+                $dummy.remove();
+                nextPosition = $dummy.insertAfter(this).position();
+                nextPosition.top -= topHeight - topScrollTop;
+                $dummy.remove();
+
+                if (ownPosition.top === nextPosition.top) {
+                    rectangles.push(new Rectangle(
+                        normalize(lineHeight / height, 1, 100), // height
+                        normalize((nextPosition.left - ownPosition.left) / width, 0, 100), // width
+                        normalize(ownPosition.left / width, 0, 100), // x
+                        normalize(ownPosition.top / height, 0, 99), // y
+                        color
+                    ));
+                    return;
+                }
+                rectangles.push(new Rectangle(
+                    normalize(lineHeight / height, 1, 100), // height
+                    100 - normalize(ownPosition.left / width, 0, 100), // width
+                    normalize(ownPosition.left / width, 0, 100), // x
+                    normalize(ownPosition.top / height, 0, 99), // y
+                    color
+                ));
+
+                currentTop = ownPosition.top + lineHeight;
+
+                while (currentTop < nextPosition.top) {
+                    rectangles.push(new Rectangle(
+                        normalize(lineHeight / height, 1, 100), // height
+                        100, // width
+                        0, // x
+                        normalize(currentTop / height, 0, 99), // y
+                        color
+                    ));
+
+                    currentTop += lineHeight;
+                }
+
+                rectangles.push(new Rectangle(
+                    normalize(lineHeight / height, 1, 100), // height
+                    normalize(nextPosition.left / width, 0, 100), // width
+                    0, // x
+                    normalize(nextPosition.top / height, 0, 99), // y
+                    color
+                ));
+            });
+
+            $scope.$apply(function () {
+                digest.rectangles = rectangles;
+            });
+        }
+
+        function updateMiniMaps() {
+            updateMiniMap($('.content:eq(0)'), $scope.digestList.digests[0]);
+            updateMiniMap($('.content:eq(1)'), $scope.digestList.digests[1]);
+        }
+
+        function check() {
+            if (!$scope.$$phase) {
+                $scope.$apply(function () {
+                    $scope.comparing = false;
+                });
+                setTimeout(function () {
+                    updateMiniMaps();
+                }, 100);
+            } else {
+                setTimeout(check, 1000);
+            }
+        }
 
         $scope.compare = function () {
             if (!$scope.comparing) {
@@ -381,17 +496,11 @@
                 comparingService.compare($scope.digestList.digests, $scope.length, function(digests) {
                     if ($scope.$$phase) {
                         $scope.digestList.digests = digests;
-                        setTimeout(function () {
-                            $scope.comparing = false;
-                        }, 1000);
+                        setTimeout(check, 1000);
                     } else {
                         $scope.$apply(function () {
                             $scope.digestList.digests = digests;
-                            setTimeout(function () {
-                                $scope.$apply(function () {
-                                    $scope.comparing = false;
-                                });
-                            }, 1000);
+                            setTimeout(check, 1000);
                         });
                     }
                 });
@@ -403,10 +512,10 @@
         $scope.digestList = new DigestList([
             new Digest([
                 new Fragment('Kopiere die zu vergleichenden Texte in die Textfelder. Identische Passagen werden mit der selben Farbe hinterlegt. Durch einen Klick auf die farbigen Stellen wird die gefundene Übereinstimmung im gegenüberliegenden Feld angezeigt.')
-            ]),
+            ], []),
             new Digest([
                 new Fragment('Das funktioniert schon ganz gut. Identische Passagen werden mit der selben Farbe hinterlegt.')
-            ])
+            ], [])
         ]);
 
         $scope.download = function () {
@@ -605,7 +714,7 @@
                     'margin-bottom': contentHeight + 'px',
                     'margin-top': contentHeight + 'px'
                 });
-                element.children().first().scrollTop(contentHeight);
+                element.children('.mask').scrollTop(contentHeight);
                 scrollTopBeforePrinting = contentHeight;
             },
             restrict: 'E',

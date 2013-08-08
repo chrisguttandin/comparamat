@@ -94,27 +94,41 @@ li:first-child {
     border-right: none;
 }
 
+div.mini-map {
+    background-color: #CCC;
+    border-bottom: 1px solid #999;
+    bottom: 30px;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 10%;
+}
+
+div.mini-map svg {
+    height: 100%;
+    width: 100%;
+}
+
 div.mask {
     background-color: #DDD;
     border-bottom: 1px solid #999;
     bottom: 30px;
-    margin: 0;
+    margin: 0 0 0 10%;
     overflow-x: hidden;
     overflow-y: scroll;
     padding: 0;
     position: absolute;
     top: 0;
-    width: 100%;
+    width: 90%;
 }
 
 div.content {
     background-color: #FFF;
     box-shadow: 0 0 100px #999;
-    /*min-height: 90%;*/
+    margin: 0;
     min-height: 100%;
     outline: none;
     padding: 2px;
-    margin: 0;
 }
 
 div.fake-content {
@@ -329,11 +343,17 @@ footer {
         display: none;
     }
 
+    div.mini-map {
+        display: none;
+    }
+
     div.mask {
         background-color: transparent;
         border: none;
+        margin: 0;
         overflow: visible;
         position: static;
+        width: 100%;
     }
 
     div.content {

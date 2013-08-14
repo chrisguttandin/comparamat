@@ -101,7 +101,13 @@ div.mini-map {
     padding: 0;
     position: absolute;
     top: 0;
+    width: 0;
+    transition: width .25s ease-in-out;
+}
+
+div.mini-map.visible {
     width: 10%;
+    transition: width .25s ease-in-out;
 }
 
 div.mini-map svg {
@@ -113,13 +119,20 @@ div.mask {
     background-color: #DDD;
     border-bottom: 1px solid #999;
     bottom: 30px;
-    margin: 0 0 0 10%;
+    margin: 0;
     overflow-x: hidden;
     overflow-y: scroll;
     padding: 0;
     position: absolute;
     top: 0;
+    width: 100%;
+    transition: margin .25s ease-in-out;
+}
+
+div.mask.with-mini-map {
+    margin: 0 0 0 10%;
     width: 90%;
+    transition: margin .25s ease-in-out;
 }
 
 div.content {
@@ -135,28 +148,31 @@ div.fake-content {
     display: none;
 }
 
-x-textaposer-text > button,
-x-textaposer-text > input,
-x-textaposer-text > span {
+x-textaposer-text .buttons {
     bottom: 0;
     margin: 5px;
     position: absolute;
 }
 
-x-textaposer-text > button.pure-button {
+x-textaposer-text > .buttons button.pure-button {
     font-size: 16px;
     line-height: 18px;
     padding: 2px 5px 0;
 }
 
-x-textaposer-text > input {
+x-textaposer-text > .buttons input {
+    display: inline;
+    height: 1px;
     visibility: hidden;
+    width: 1px;
 }
 
-x-textaposer-text > span {
+x-textaposer-text > .buttons span {
     display: block;
-    left: 140px;
+    left: 290px;
     padding: 2px 0 0;
+    position: absolute;
+    top: 0;
 }
 
 span.colored {
@@ -337,9 +353,9 @@ footer {
     }
 
     footer > button.pure-button,
-    x-textaposer-text > button.pure-button,
-    x-textaposer-text > input,
-    x-textaposer-text > span {
+    x-textaposer-text > .buttons button.pure-button,
+    x-textaposer-text > .buttons input,
+    x-textaposer-text > .buttons span {
         display: none;
     }
 

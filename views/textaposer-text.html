@@ -1,9 +1,9 @@
-<div class="mini-map">
+<div class="mini-map" ng-class="{visible: miniMapIsVisible}">
     <svg preserveAspectRatio="none" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <rect ng-attr-height="{{rectangle.height}}" ng-attr-width="{{rectangle.width}}" ng-attr-x="{{rectangle.x}}" ng-attr-y="{{rectangle.y}}" ng-repeat="rectangle in digest.rectangles" fill="{{rectangle.fill}}"/>
     </svg>
 </div>
-<div class="mask">
+<div class="mask" ng-class="{'with-mini-map': miniMapIsVisible}">
     <div class="content" contenteditable></div>
     <div class="fake-content">
         <x-textaposer-fragment ng-repeat="fragment in digest.fragments"><span id="{{fragment.id}}" data-ng-class="{
@@ -17,6 +17,9 @@
             }">{{fragment.text}}</span></x-textaposer-fragment>
     </div>
 </div>
-<button class="pure-button" data-ng-click="clickFileInput()">Datei ausw&auml;hlen</button>
-<span>{{path}}</span>
-<input accept="text/plain" data-textaposer-file type="file">
+<div class="buttons">
+    <button class="pure-button" data-ng-click="toggleMiniMap()">MiniMap ausblenden</button>
+    <button class="pure-button" data-ng-click="clickFileInput()">Datei ausw&auml;hlen</button>
+    <span>{{path}}</span>
+    <input accept="text/plain" data-textaposer-file type="file">
+</div>

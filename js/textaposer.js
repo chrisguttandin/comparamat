@@ -638,8 +638,14 @@
             }
         };
 
+        $scope.miniMapIsVisible = true;
+
         $scope.select = function() {
             selectionService.select($scope.selection);
+        };
+
+        $scope.toggleMiniMap = function () {
+            $scope.miniMapIsVisible = !$scope.miniMapIsVisible;
         };
     });
 

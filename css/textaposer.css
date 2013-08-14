@@ -35,7 +35,8 @@ h1.screen-only {
 }
 
 h1.print-only,
-h2.print-only {
+h2.print-only,
+p.print-only {
     display: none;
 }
 
@@ -252,6 +253,20 @@ footer {
     width: 100%;
 }
 
+#export-dialog textarea {
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    padding: .5em 1.5em;
+    resize: vertical;
+    width: 100%;
+}
+
+#export-dialog input,
+#export-dialog textarea {
+    font-size: 100%;
+    margin: 0;
+}
+
 #export-dialog label,
 #export-dialog p {
     color: #000;
@@ -329,6 +344,14 @@ footer {
         position: static;
     }
 
+    ul:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
     li {
         background-color: transparent;
         border: none;
@@ -372,6 +395,12 @@ footer {
         width: 100%;
     }
 
+    div.mask.with-mini-map {
+        margin: 0;
+        width: 100%;
+        transition: none;
+    }
+
     div.content {
         background-color: transparent;
         box-shadow: none;
@@ -386,6 +415,10 @@ footer {
     .color-five,
     .color-six {
         box-shadow: none;
+    }
+
+    p {
+        padding: 5px;
     }
 
     #export-background {

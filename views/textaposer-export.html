@@ -2,10 +2,12 @@
     <form class="pure-form" id="export-dialog">
         <label for="title">Lege eine Überschrift für das Dokument fest:</label>
         <input data-ng-model="title" id="title" placeholder="Die Überschrift des Dokumentes">
-        <label for="title">Lege eine Überschrift der linken Spalte fest:</label>
+        <label for="left-column-title">Lege eine Überschrift der linken Spalte fest:</label>
         <input data-ng-model="leftColumnTitle" id="left-column-title" placeholder="Die Überschrift der linken Spalte">
-        <label for="title">Lege eine Überschrift der rechten Spalte fest:</label>
+        <label for="right-column-title">Lege eine Überschrift der rechten Spalte fest:</label>
         <input data-ng-model="rightColumnTitle" id="right-column-title" placeholder="Die Überschrift der rechten Spalte">
+        <label for="title">Gib einen optionalen Kommentar an:</label>
+        <textarea data-ng-model="comment" id="comment" placeholder="Der Kommentar"></textarea>
         <label for="filename">Lege einen Dateinamen für den Download fest:</label>
         <input data-ng-model="filename" id="filename" placeholder="Der Dateiname des Dokumentes">
         <div id="export-buttons">

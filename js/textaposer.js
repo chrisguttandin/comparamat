@@ -211,7 +211,7 @@
             return container;
         }
 
-        function buildDocument(title, leftColumnTitle, rightColumnTitle) {
+        function buildDocument(title, leftColumnTitle, rightColumnTitle, comment) {
             var l = latex();
 
             l.utf8 = true;
@@ -232,14 +232,15 @@
                 buildContainer($('x-textaposer-text:eq(0) .content span')),
                 buildContainer($('x-textaposer-text:eq(1) .content span'))
             ]));
+            l.addChild(latex.paragraph(comment));
 
             return l.toLaTeX();
         }
 
         return {
-            download: function (title, leftColumnTitle, rightColumnTitle, filename) {
+            download: function (title, leftColumnTitle, rightColumnTitle, comment, filename) {
                 var dataURI,
-                    doc = buildDocument(title, leftColumnTitle, rightColumnTitle),
+                    doc = buildDocument(title, leftColumnTitle, rightColumnTitle, comment),
                     $form;
 
                 dataURI = 'data:application/latex;base64,' + Base64.encode(doc);
@@ -250,8 +251,8 @@
                 $('body').append($form);
                 $form.submit().remove();
             },
-            open: function (title, leftColumnTitle, rightColumnTitle) {
-                var doc = buildDocument(title, leftColumnTitle, rightColumnTitle),
+            open: function (title, leftColumnTitle, rightColumnTitle, comment) {
+                var doc = buildDocument(title, leftColumnTitle, rightColumnTitle, comment),
                     $form;
 
                 $form = $('<form action="https://www.writelatex.com/docs" method="post" target="_blank">');
@@ -488,6 +489,8 @@
             }
         }
 
+        $scope.comment = 'waraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rarar';
+
         $scope.compare = function () {
             if (!$scope.comparing) {
                 $scope.comparing = true;
@@ -520,7 +523,7 @@
 
         $scope.download = function () {
             $scope.exportHidden = true;
-            exportService.download($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle, $scope.filename);
+            exportService.download($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle, $scope.comment, $scope.filename);
         };
 
         $scope.export = function () {
@@ -542,7 +545,7 @@
 
         $scope.open = function () {
             $scope.exportHidden = true;
-            exportService.open($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle);
+            exportService.open($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle, $scope.comment);
         };
 
         $scope.rightColumnTitle = '';

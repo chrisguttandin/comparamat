@@ -375,6 +375,7 @@ footer {
         left: 50%;
     }
 
+    footer > a.pure-button,
     footer > button.pure-button,
     x-textaposer-text > .buttons button.pure-button,
     x-textaposer-text > .buttons input,

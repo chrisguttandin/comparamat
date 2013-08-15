@@ -154,15 +154,20 @@
                     digests[0].fragments = fragments;
 
                     fragments = [];
-                    $('<div>' + frags.plagiarism + '</div>').find('span').each(function () {
+                    $('<div>' + frags.plagiarism + '</div>').find('br, span').each(function () {
                         var equivalent,
                             f = new Fragment($(this).text());
 
-                        if (this.className !== '') {
-                            equivalent = fragmarks[this.className];
-                            equivalent.equivalent = f;
-                            f.color = equivalent.color;
-                            f.equivalent = equivalent;
+                        if (this.nodeName.toLowerCase() === 'span') {
+                            f = new Fragment($(this).html());
+                            if (this.className !== '') {
+                                equivalent = fragmarks[this.className];
+                                equivalent.equivalent = f;
+                                f.color = equivalent.color;
+                                f.equivalent = equivalent;
+                            }
+                        } else {
+                            f = new Fragment(this.outerHTML);
                         }
                         fragments.push(f);
                     });
@@ -759,7 +764,7 @@
                     $scope.digest.fragments[0].text = content
                         /*.replace(/&nbsp;/g, ' ')
                         .replace(/<br\sclass="textaposer"[\s\/]*>/g, '\n')*/
-                        .replace(/<[^b]+[^>]*>/g, '');
+                        .replace(/<[^b]{1}[^>]*>/g, '');
 
                     //$scope.compare();
                 });

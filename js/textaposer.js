@@ -489,7 +489,7 @@
             }
         }
 
-        $scope.comment = 'waraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rararwaraararar rarar';
+        $scope.comment = '';
 
         $scope.compare = function () {
             if (!$scope.comparing) {

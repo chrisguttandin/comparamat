@@ -281,12 +281,10 @@
                     range = selection.getRangeAt(0);
                     offset = range.startOffset;
 
+                    $current = $(range.startContainer);
+
                     // check if the range is inside .content
-                    if ($(range.startContainer).hasClass('content')
-                            || $(range.startContainer).parents('div.content').length > 0) {
-
-                        $current = $(range.startContainer);
-
+                    if ($current.parents('div.content').length > 0) {
                         while (!$current.hasClass('content')) {
                             offset += $current.prevAll().text().length;
                             $current = $current.parent();
@@ -296,6 +294,15 @@
                             offset: offset
                         };
                     }
+                    // check if the range's startContainer is .content itself
+                    if ($current.hasClass('content')) {
+                        return {
+                            fragment: $current.parents('li').prev().length,
+                            offset: offset
+                        };
+                    }
+                    alert('oi');
+                    console.log(range.startContainer);
                 }
                 return {
                     fragment: -1,
@@ -306,7 +313,7 @@
             select: function(selection) {
                 var remainingOffset = selection.offset;
 
-                if (selection.fragment > 1 && remainingOffset > -1) {
+                if (selection.fragment > -1 && remainingOffset > -1) {
                     $('x-textaposer-text:eq(' + selection.fragment + ') .content').contents().each(function () {
                         var length = $(this).text().length,
                             range,
@@ -317,8 +324,16 @@
                             remainingOffset -= length;
                         } else {
                             range = document.createRange();
-                            // @todo so lange nach unten wandern, bis eine textNode erreicht ist und die länge passt
-                            startContainer = (this.nodeType === 3) ? this : $(this).contents()[0];
+                            startContainer = this;
+                            while (startContainer.nodeType !== 3) {
+                                startContainer = $(startContainer).contents()[0];
+                                length = $(startContainer).text().length;
+                                while (length < remainingOffset) {
+                                    remainingOffset -= length;
+                                    startContainer = $(startContainer).next()[0];
+                                    length = $(startContainer).text().length;
+                                }
+                            }
                             selection = window.getSelection();
                             range.setStart(startContainer, remainingOffset);
                             range.collapse(true);
@@ -665,13 +680,51 @@
 //                    totalOffset;
 
                 $content.bind('input', function () {
+
+                    var content;
+
                     console.log('input');
 
                     while ($scope.digest.fragments.length > 1) {
                         $scope.digest.fragments.pop();
                     }
 
-                    $scope.digest.fragments[0].text = $content.text();
+                    content = $content.html();
+
+                    if (content.match(/<div[^<]*?>/)) {
+                        content = content
+                            .replace(/<div[^<]*?>/g, '<br id="selection-marker" class="textaposer">')
+                            .replace(/<\/div>/g, '')
+                            .replace(/<br>/g, '');
+                    } else if (content.match(/<br>/)) {
+                        content = content
+                            .replace(/<br><br/g, '<br id="selection-marker" class="textaposer"><br')
+                            .replace(/<br>/g, '');
+                    }
+
+                    $content.html(content);
+
+                    setTimeout(function setSelection() {
+                        var range,
+                            selection,
+                            $selectionMarker = $('#selection-marker');
+
+                        if ($selectionMarker.length > 0) {
+                            range = document.createRange();
+                            selection = window.getSelection();
+                            range.setStart($selectionMarker.removeAttr('id')[0].nextSibling, 0);
+                            range.collapse(true);
+                            selection.removeAllRanges();
+                            selection.addRange(range);
+                        } else {
+                            setTimeout(setSelection, 10);
+                        }
+                    }, 10);
+
+                    $scope.digest.fragments[0].text = content
+                        .replace(/&nbsp;/g, ' ')
+                        .replace(/<br\sclass="textaposer">/g, '\n')
+                        .replace(/<([^>]*)>/g, '');
 
                     //$scope.compare();
                 });
@@ -694,8 +747,10 @@
                                 // remove whitespace in between tags
                                 .replace(/>([\n\r\s]*?)<([^\/]{1})/g, '><$2')
                                 // remove whitespace at the end
-                                .replace(/>([\n\r\s]*?)$/g, '>');
-                                // @todo replace all the other angular attributes
+                                .replace(/>([\n\r\s]*?)$/g, '>')
+                                // remove angular attributes
+                                .replace(/data\-ng\-([a-z]+)="([^"]*?)"\s/g, '')
+                                .replace(/\n/g, '<br class="textaposer">');
 
                             $scope.select();
 

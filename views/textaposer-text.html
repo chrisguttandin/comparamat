@@ -6,7 +6,7 @@
 <div class="mask" ng-class="{'with-mini-map': miniMapIsVisible}">
     <div class="content" contenteditable></div>
     <div class="fake-content">
-        <x-textaposer-fragment ng-repeat="fragment in digest.fragments"><span id="{{fragment.id}}" data-ng-class="{
+        <x-textaposer-fragment ng-repeat="fragment in digest.fragments"><span id="{{fragment.id}}" data-ng-bind-html-unsafe="fragment.text" data-ng-class="{
                 'color-one': fragment.color == 1,
                 'color-two': fragment.color == 2,
                 'color-three': fragment.color == 3,
@@ -14,7 +14,7 @@
                 'color-five': fragment.color == 5,
                 'color-six': fragment.color == 6,
                 'colored': fragment.color > 0
-            }">{{fragment.text}}</span></x-textaposer-fragment>
+            }"></span></x-textaposer-fragment>
     </div>
 </div>
 <div class="buttons">

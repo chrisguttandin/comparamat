@@ -121,28 +121,33 @@
                         length
                     );
 
-                    $('<div>' + frags.original + '</div>').find('span').each(function () {
+                    $('<div>' + frags.original + '</div>').find('br, span').each(function () {
                         var classNames,
-                            f = new Fragment($(this).text()),
+                            f,
                             i,
                             length;
 
-                        if (this.className !== '') {
-                            lastColorIndex += 1;
-                            f.color = lastColorIndex;
-                            if (lastColorIndex > 5) {
-                                lastColorIndex = 0;
-                            }
-                            if (this.className.match(/ /)) { // eg. 'fragmarkx fragmarky'
-                                classNames = this.className.split(' ');
-                                length = classNames.length;
-
-                                for (i = 0; i < length; i += 1) {
-                                    fragmarks[classNames[i]] = f;
+                        if (this.nodeName.toLowerCase() === 'span') {
+                            f = new Fragment($(this).html());
+                            if (this.className !== '') {
+                                lastColorIndex += 1;
+                                f.color = lastColorIndex;
+                                if (lastColorIndex > 5) {
+                                    lastColorIndex = 0;
                                 }
-                            } else {
-                                fragmarks[this.className] = f;
+                                if (this.className.match(/ /)) { // eg. 'fragmarkx fragmarky'
+                                    classNames = this.className.split(' ');
+                                    length = classNames.length;
+
+                                    for (i = 0; i < length; i += 1) {
+                                        fragmarks[classNames[i]] = f;
+                                    }
+                                } else {
+                                    fragmarks[this.className] = f;
+                                }
                             }
+                        } else {
+                            f = new Fragment(this.outerHTML);
                         }
                         fragments.push(f);
                     });
@@ -679,7 +684,9 @@
 
                 $content.bind('input', function () {
 
-                    var content;
+                    var content,
+                        maxAttempts = 10,
+                        modifiedContent = false;
 
                     console.log('input');
 
@@ -689,40 +696,70 @@
 
                     content = $content.html();
 
-                    if (content.match(/<div[^<]*?>/)) {
+                    if (content.match(/<div[^<]*>/)) { // Chrome often uses <div><br></div> constructs to add line breaks
                         content = content
-                            .replace(/<div[^<]*?>/g, '<br id="selection-marker" class="textaposer">')
+                            .replace(/<div[^<]*>/g, '<br id="selection-marker" class="textaposer"/>')
                             .replace(/<\/div>/g, '')
-                            .replace(/<br>/g, '');
-                    } else if (content.match(/<br>/)) {
+                            .replace(/<br[\s\/]*>/g, '');
+                        modifiedContent = true;
+                    } else if (content.match(/<br[\s\/]*>/)) { // Firefox simple <br> tags to add line breaks
                         content = content
-                            .replace(/<br><br/g, '<br id="selection-marker" class="textaposer"><br')
-                            .replace(/<br>/g, '<br id="selection-marker" class="textaposer">');
+                            .replace(/<br[\s\/]*><br/g, '<br id="selection-marker" class="textaposer"/><br')
+                            .replace(/<br[\s\/]*>/g, '<br id="selection-marker" class="textaposer"/>');
+                        modifiedContent = true;
                     }
 
-                    $content.html(content);
-
-                    setTimeout(function setSelection() {
-                        var range,
-                            selection,
-                            $selectionMarker = $('#selection-marker');
-
-                        if ($selectionMarker.length > 0) {
-                            range = document.createRange();
-                            selection = window.getSelection();
-                            range.setStart($selectionMarker.removeAttr('id')[0].nextSibling, 0);
-                            range.collapse(true);
-                            selection.removeAllRanges();
-                            selection.addRange(range);
-                        } else {
-                            setTimeout(setSelection, 10);
+                    // make sure there is always a <br> at the end
+                    if (!content.match(/<br[^>]*>$/)) {
+                        content += '<br class="textaposer"/>';
+                        if (!modifiedContent) { // insert the br directly if the content gets not modified
+                            $content.append('<br class="textaposer"/>');
                         }
-                    }, 10);
+                    }
+
+                    if (modifiedContent) {
+                        // add a single whitespace in between <br> tags, otherwise there is no chance to set the selection
+                        content = content
+                            .replace(/(<br[^>]*>)(<br[^>]*>)/g, '$1 $2')
+                            .replace(/(<br[^>]*>)(<br[^>]*>)/g, '$1 $2');
+
+                        $content.html(content);
+
+                        setTimeout(function setSelection() {
+                            var range,
+                                selection,
+                                $selectionMarker = $('#selection-marker'),
+                                startContainer;
+
+                            if ($selectionMarker.length > 0) {
+                                range = document.createRange();
+                                selection = window.getSelection();
+                                startContainer = $selectionMarker.removeAttr('id')[0].nextSibling;
+                                if (startContainer) {
+                                    range.setStart(startContainer, 0);
+                                } else {
+                                    startContainer = $selectionMarker.removeAttr('id')[0].previousSibling;
+                                    if (!startContainer) {
+                                        return;
+                                    }
+                                    range.setStart(startContainer, startContainer.length);
+                                }
+                                range.collapse(true);
+                                selection.removeAllRanges();
+                                selection.addRange(range);
+                            } else {
+                                maxAttempts -= 1;
+                                if (maxAttempts > 0) {
+                                    setTimeout(setSelection, 10);
+                                }
+                            }
+                        }, 10);
+                    }
 
                     $scope.digest.fragments[0].text = content
-                        .replace(/&nbsp;/g, ' ')
-                        .replace(/<br\sclass="textaposer">/g, '\n')
-                        .replace(/<([^>]*)>/g, '');
+                        /*.replace(/&nbsp;/g, ' ')
+                        .replace(/<br\sclass="textaposer"[\s\/]*>/g, '\n')*/
+                        .replace(/<[^b]+[^>]*>/g, '');
 
                     //$scope.compare();
                 });
@@ -748,7 +785,7 @@
                                 .replace(/>([\n\r\s]*?)$/g, '>')
                                 // remove angular attributes
                                 .replace(/data-ng-([a-z]+)="([^"]*)"/g, '')
-                                .replace(/\n/g, '<br class="textaposer">');
+                                .replace(/\n/g, '<br class="textaposer"/>');
 
                             $scope.select();
 

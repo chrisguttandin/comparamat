@@ -301,8 +301,6 @@
                             offset: offset
                         };
                     }
-                    alert('oi');
-                    console.log(range.startContainer);
                 }
                 return {
                     fragment: -1,
@@ -699,7 +697,7 @@
                     } else if (content.match(/<br>/)) {
                         content = content
                             .replace(/<br><br/g, '<br id="selection-marker" class="textaposer"><br')
-                            .replace(/<br>/g, '');
+                            .replace(/<br>/g, '<br id="selection-marker" class="textaposer">');
                     }
 
                     $content.html(content);
@@ -749,7 +747,7 @@
                                 // remove whitespace at the end
                                 .replace(/>([\n\r\s]*?)$/g, '>')
                                 // remove angular attributes
-                                .replace(/data\-ng\-([a-z]+)="([^"]*?)"\s/g, '')
+                                .replace(/data-ng-([a-z]+)="([^"]*)"/g, '')
                                 .replace(/\n/g, '<br class="textaposer">');
 
                             $scope.select();

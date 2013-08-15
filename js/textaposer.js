@@ -198,14 +198,14 @@
                         return match[1].toUpperCase();
                     });
 
-                    container.addChild(latex.textcolor($(this).text(), {
+                    container.addChild(latex.textcolor($.trim($(this).text()), {
                         color: {
                             name: name,
                             values: values
                         }
                     }));
                 } else {
-                    container.addChild($(this).text());
+                    container.addChild($.trim($(this).text()));
                 }
             });
             return container;

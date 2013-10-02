@@ -21,6 +21,7 @@ exclude = [];
 files = [
     ANGULAR_SCENARIO,
     ANGULAR_SCENARIO_ADAPTER,
+    'test/angular-contenteditable-scenario.js',
     'test/e2e/**/*.js'
 ];
 

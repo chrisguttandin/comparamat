@@ -2,20 +2,22 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <link href="bower_components/pure/build/pure-min.css" rel="stylesheet" type="text/css">
         <link href="//fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet" type="text/css">
         <!-- build:css styles/textaposer.css -->
+        <link href="bower_components/pure/build/pure-min.css" rel="stylesheet" type="text/css">
         <link href="styles/textaposer.css" rel="stylesheet" type="text/css">
         <!-- endbuild -->
         <title>Textaposer</title>
     </head>
     <body data-ng-app="textaposer">
         <x-textaposer-main/>
-        <!-- build:js scripts/textaposer.js -->
-        <script src="scripts/fragcolors.js"></script>
+        <!-- <script src="scripts/fragcolors.js"></script> -->
+        <script src="bower_components/jquery/jquery.min.js"></script>
         <script src="scripts/latex.min.js"></script>
         <script src="scripts/base64.js"></script>
+        <!-- build:js scripts/textaposer.js -->
         <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-consistent-contenteditable/src/consistent-contenteditable.js"></script>
 
         <script src="scripts/app.js"></script>
         <!-- controllers -->
@@ -33,6 +35,7 @@
         <!-- factories -->
         <script src="scripts/factories/digest.js"></script>
         <script src="scripts/factories/digest-list.js"></script>
+        <script src="scripts/factories/line.js"></script>
         <script src="scripts/factories/fragment.js"></script>
         <script src="scripts/factories/rectangle.js"></script>
         <!-- filters -->

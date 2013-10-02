@@ -4,17 +4,23 @@ angular
     .module('textaposer')
     .controller('textaposerMainCtrl', [
         '$scope',
+        '$compile',
+        '$rootScope',
         'comparingService',
         'Digest',
         'DigestList',
+        'Line',
         'Fragment',
         'Rectangle',
         'selectionService',
         function (
             $scope,
+            $compile,
+            $rootScope,
             comparingService,
             Digest,
             DigestList,
+            Line,
             Fragment,
             Rectangle,
             selectionService
@@ -91,8 +97,8 @@ angular
                 length = $content.find('span.colored').length;
 
                 $content.find('span.colored').each(function (index) {
-                    var $afterDummy = $('<span id="textaposer-after-dummy"></span>').insertAfter(this),
-                        $beforeDummy = $('<span id="textaposer-before-dummy"></span>'),
+                    var $afterDummy = $('<i id="textaposer-after-dummy"></i>').insertAfter(this),
+                        $beforeDummy = $('<i id="textaposer-before-dummy"></i>'),
                         temp;
 
                     temp = this;
@@ -100,6 +106,8 @@ angular
                         temp = $(temp).prev()[0];
                     }
                     $beforeDummy.insertBefore(temp);
+//console.log($(this).position());
+//console.log($beforeDummy.position());
 
                     setTimeout(function (isLast) {
                         var color = $(this).css('background-color'),
@@ -132,21 +140,8 @@ angular
             }
 
             function updateMiniMaps() {
-                updateMiniMap($('.content:eq(0)'), $scope.digestList.digests[0]);
-                updateMiniMap($('.content:eq(1)'), $scope.digestList.digests[1]);
-            }
-
-            function check() {
-                if (!$scope.$$phase) {
-                    $scope.$apply(function () {
-                        $scope.comparing = false;
-                    });
-                    setTimeout(function () {
-                        updateMiniMaps();
-                    }, 100);
-                } else {
-                    setTimeout(check, 1000);
-                }
+                //updateMiniMap($('.content:eq(0)'), $scope.digestList.digests[0]);
+                //updateMiniMap($('.content:eq(1)'), $scope.digestList.digests[1]);
             }
 
             $scope.comment = '';
@@ -154,16 +149,80 @@ angular
             $scope.compare = function () {
                 if (!$scope.comparing) {
                     $scope.comparing = true;
-                    $scope.selection = selectionService.detect();
 
-                    comparingService.compare($scope.digestList.digests, $scope.length, function(digests) {
+                    var uglyDigests = [];
+                    $('.content').each(function (index) {
+                        var lines = [];
+
+                        $(this).find('div').each(function () {
+                            lines.push(                            
+                                new Line([
+                                    new Fragment(
+                                        $(this).text(),
+                                        Fragment.NODE_NAME.SPAN
+                                    )
+                                ])
+                            );
+                        });
+
+                        uglyDigests[index] = new Digest(lines);
+                    });
+                    comparingService.compareDigests(uglyDigests, $scope.length, function(digests) {
+                        var element,
+                            i,
+                            length,
+                            scope;
+
+                        length = digests.length;
+
+                        for (i = 0; i < length; i += 1) {
+                            element = angular.element('<div class="fake-content"><div data-ng-repeat="line in digest.lines"><x-textaposer-fragment data-ng-repeat="fragment in line.fragments" data-ng-switch="fragment.nodeName"><span id="{{fragment.index}}" data-ng-class="{\'color-one\': fragment.color == 1, \'color-two\': fragment.color == 2, \'color-three\': fragment.color == 3, \'color-four\': fragment.color == 4, \'color-five\': fragment.color == 5, \'color-six\': fragment.color == 6, \'colored\': fragment.color > 0}" data-ng-switch-when="span">{{fragment.text}}</span><br data-ng-switch-when="br"/></x-textaposer-fragment></div></div>');
+                            scope = $rootScope.$new();
+
+                            scope.digest = digests[i];
+                            $compile(element)(scope);
+                            scope.$digest();
+
+                            scope.digest.html = element.html().replace(/<!--(.*?)-->/g, '')
+                                .replace(/<x-textaposer-fragment(.*?)>/g, '')
+                                .replace(/<\/x-textaposer-fragment>/g, '')
+
+                                // removing whitespace is necesarry to keep track of the current selection
+                                // remove trailing whitespace
+                                .replace(/^([\n\r\s]*?)</g, '<')
+                                // remove whitespace in between tags
+                                .replace(/>([\n\r\s]*?)<([^\/]{1})/g, '><$2')
+                                // remove whitespace at the end
+                                .replace(/>([\n\r\s]*?)$/g, '>')
+                                // remove angular attributes
+                                .replace(/data-ng-([a-z\-]+)="([^"]*)"/g, '')
+                                // remove ng-binding class attribute
+                                .replace(/ng-binding/g, '')
+                                // remove ng-scope class attribute
+                                .replace(/ng-scope/g, '')
+                                // remove empty class attribute
+                                .replace(/class="[\s]*"/g, '')
+                                // remove duplicate white spaces
+                                .replace(/[ ]+/g, ' ')
+                                // remove space in front of a closing angle bracket
+                                .replace(/ >/g, '>');
+                        }
+
+                        $scope.selection = selectionService.detect();
+
                         if ($scope.$$phase) {
                             $scope.digestList.digests = digests;
-                            setTimeout(check, 1000);
+                            $scope.comparing = false;
+                            setTimeout(function () {
+                                selectionService.select($scope.selection);
+                            });
                         } else {
                             $scope.$apply(function () {
                                 $scope.digestList.digests = digests;
-                                setTimeout(check, 1000);
+                                $scope.comparing = false;
+                                setTimeout(function () {
+                                    selectionService.select($scope.selection);
+                                });
                             });
                         }
                     });
@@ -173,19 +232,11 @@ angular
             $scope.comparing = false;
 
             $scope.digestList = new DigestList([
-                new Digest([
-                    new Fragment(
-                        'Kopiere die zu vergleichenden Texte in die Textfelder. Identische Passagen werden mit der selben Farbe hinterlegt. Durch einen Klick auf die farbigen Stellen wird die gefundene Übereinstimmung im gegenüberliegenden Feld angezeigt.',
-                        Fragment.NODE_NAME.SPAN
-                    )
-                ], []),
-                new Digest([
-                    new Fragment(
-                        'Das funktioniert schon ganz gut. Identische Passagen werden mit der selben Farbe hinterlegt.',
-                        Fragment.NODE_NAME.SPAN
-                    )
-                ], [])
+                new Digest([], []),
+                new Digest([], [])
             ]);
+            $scope.digestList.digests[0].html = '<div>Kopiere die zu vergleichenden Texte in die Textfelder. Identische Passagen werden mit der selben Farbe hinterlegt. Durch einen Klick auf die farbigen Stellen wird die gefundene Übereinstimmung im gegenüberliegenden Feld angezeigt.</div><div>Zeile 2</div><div>Zeile 3</div>';
+            $scope.digestList.digests[1].html = '<div>Das funktioniert schon ganz gut. Identische Passagen werden mit der selben Farbe hinterlegt.</div>';
 
             // start with a default of 3 words to be the same
             $scope.length = 3;

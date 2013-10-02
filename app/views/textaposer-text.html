@@ -4,9 +4,10 @@
     </svg>
 </div>
 <div class="mask" data-ng-class="{'with-mini-map': miniMapIsVisible}">
-    <div class="content" contenteditable></div>
-    <div class="fake-content">
-        <x-textaposer-fragment data-ng-repeat="fragment in digest.fragments" data-ng-switch="fragment.nodeName"><span id="{{fragment.id}}" data-ng-class="{
+    <div class="content" contenteditable data-cg-con-content data-html="digest.html" data-text="text"></div>
+    <!-- <div class="fake-content">
+        <div data-ng-repeat="line in digest.lines">
+            <x-textaposer-fragment data-ng-repeat="fragment in line.fragments" data-ng-switch="fragment.nodeName"><span id="{{fragment.id}}" data-ng-class="{
                 'color-one': fragment.color == 1,
                 'color-two': fragment.color == 2,
                 'color-three': fragment.color == 3,
@@ -15,10 +16,11 @@
                 'color-six': fragment.color == 6,
                 'colored': fragment.color > 0
             }" data-ng-switch-when="span">{{fragment.text}}</span><br class="textaposer" data-ng-switch-when="br"/></x-textaposer-fragment>
-    </div>
+        </div>
+    </div> -->
 </div>
 <div class="buttons">
-    <button class="pure-button" data-ng-click="toggleMiniMap()">MiniMap ausblenden</button>
+    <!--<button class="pure-button" data-ng-click="toggleMiniMap()">MiniMap ausblenden</button>-->
     <button class="pure-button" data-ng-click="clickFileInput()">Datei ausw&auml;hlen</button>
     <span>{{path}}</span>
     <input accept="text/plain" data-textaposer-file type="file">

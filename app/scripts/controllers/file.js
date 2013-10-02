@@ -2,7 +2,7 @@
 
 angular
     .module('textaposer')
-    .controller('textaposerFileCtrl', function ($scope, Fragment) {
+    .controller('textaposerFileCtrl', function ($scope, Line, Fragment) {
 
         $scope.path = '';
 
@@ -12,7 +12,7 @@ angular
             if (file.type === 'text/plain') {
                 reader.onload = function(event) {
                     $scope.$apply(function () {
-                        $scope.digest.fragments = [new Fragment(event.target.result, Fragment.NODE_NAME.SPAN)];
+                        $scope.digest.html = '<div>' + event.target.result.split(/\n/).join('</div><div>') + '</div>';
                     });
                     //$scope.compare();
                 };

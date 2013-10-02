@@ -16,14 +16,14 @@ angular
 
             if ($fragment.hasClass('colored')) {
                 fragment = $scope.digest.getFragment(id);
-                $equivalent = $element.parent().siblings().find('span[id="' + fragment.equivalent.id + '"]');
+                $equivalent = $element.parent().siblings().find('span[id="' + id + '"]');
                 $mask = $element.parent().siblings().find('div.mask');
 
                 $mask.scrollTop($mask.scrollTop() - ($fragment.position().top - $equivalent.position().top));
             }
         };
 
-        $scope.miniMapIsVisible = true;
+        $scope.miniMapIsVisible = false; //true;
 
         $scope.select = function() {
             selectionService.select($scope.selection);

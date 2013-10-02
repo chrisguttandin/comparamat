@@ -6,7 +6,7 @@ angular
 
         function Fragment(text, nodeName) {
             this.color = 0;
-            this.id = (function () {
+            /*this.id = (function () {
                 var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
                     charactersLength = characters.length,
                     choosenCharacters = [],
@@ -17,7 +17,7 @@ angular
                 }
 
                 return choosenCharacters.join('');
-            }());
+            }());*/
             this.nodeName = nodeName;
             this.text = text;
         }

@@ -11,7 +11,7 @@
 <h2 class="print-only">{{leftColumnTitle}}</h2><h2 class="print-only">{{rightColumnTitle}}</h2>
 <ul>
     <li data-ng-repeat="digest in digestList.digests">
-        <x-textaposer-text/>
+        <x-textaposer-text data-digest="digest" data-selection="selection"/>
     </li>
 </ul>
 <p class="print-only">{{comment}}</p>

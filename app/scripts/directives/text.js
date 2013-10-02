@@ -11,13 +11,13 @@ angular
             link: function ($scope, element) {
                 var $content = element.find('.content'),
                     contentHeight,
-                    counter = 0,
-                    $fakeContent = element.find('.fake-content'),
+//                    counter = 0,
+//                    $fakeContent = element.find('.fake-content'),
                     scrollTopBeforePrinting;
 //                    selectedDigest,
 //                    totalOffset;
 
-                $content.bind('input', function () {
+/*                $content.bind('input', function () {
 
                     var content,
                         maxAttempts = 10,
@@ -32,12 +32,14 @@ angular
                     content = $content.html();
 
                     if (content.match(/<div[^<]*>/)) { // Chrome often uses <div><br></div> constructs to add line breaks
+                    alert('div');
                         content = content
                             .replace(/<div[^<]*>/g, '<br id="selection-marker" class="textaposer"/>')
                             .replace(/<\/div>/g, '')
                             .replace(/<br[\s\/]*>/g, '');
                         modifiedContent = true;
                     } else if (content.match(/<br[\s\/]*>/)) { // Firefox simple <br> tags to add line breaks
+                    alert('br');
                         content = content
                             .replace(/<br[\s\/]*><br/g, '<br id="selection-marker" class="textaposer"/><br')
                             .replace(/<br[\s\/]*>/g, '<br id="selection-marker" class="textaposer"/>');
@@ -46,9 +48,12 @@ angular
 
                     // make sure there is always a <br> at the end
                     if (!content.match(/<br[^>]*>$/)) {
+                        alert('no br at end');
                         content += '<br class="textaposer"/>';
                         if (!modifiedContent) { // insert the br directly if the content gets not modified
-                            $content.append('<br class="textaposer"/>');
+                            alert($content.html());
+                            $content[0].innerHTML += '<br class="textaposer"/>';
+                            alert($content.html());
                         }
                     }
 
@@ -92,20 +97,30 @@ angular
                     }
 
                     $scope.digest.fragments[0].text = content
-                        /*.replace(/&nbsp;/g, ' ')
-                        .replace(/<br\sclass="textaposer"[\s\/]*>/g, '\n')*/
+//                        .replace(/&nbsp;/g, ' ')
+//                        .replace(/<br\sclass="textaposer"[\s\/]*>/g, '\n')
                         .replace(/<[^b]{1}[^>]*>/g, '');
 
                     //$scope.compare();
+                });*/
+    
+                $scope.$watch('html', function(newValue, oldValue) {
+                    $content.find('span').bind('click', function () {
+                        $scope.focus(this.id);
+                    });
                 });
 
-                $fakeContent.bind('DOMSubtreeModified', function () {
+/*                $fakeContent.bind('DOMSubtreeModified', function () {
                     counter += 1;
                     setTimeout(function (innerCounter) { // angular needs some time to render the template
+                        var html;
+
                         if (counter === innerCounter) {
                             console.log('DOMSubtreeModified');
 
-                            $content[0].innerHTML = $fakeContent
+                            //$content[0].innerHTML = $fakeContent
+                            
+                            html = $fakeContent
                                 .html()
                                 .replace(/<!--(.*?)-->/g, '')
                                 .replace(/<x-textaposer-fragment(.*?)>/g, '')
@@ -120,16 +135,31 @@ angular
                                 .replace(/>([\n\r\s]*?)$/g, '>')
                                 // remove angular attributes
                                 .replace(/data-ng-([a-z\-]+)="([^"]*)"/g, '')
-                                .replace(/\n/g, '<br class="textaposer"/>');
-
-                            $scope.select();
-
-                            $content.find('span').bind('click', function () {
-                                $scope.focus(this.id);
+                                // remove ng-binding class attribute
+                                .replace(/ng-binding/g, '')
+                                // remove ng-scope class attribute
+                                .replace(/ng-scope/g, '')
+                                // remove empty class attribute
+                                .replace(/class="[\s]*"/g, '')
+                                // remove duplicate white spaces
+                                .replace(/[ ]+/g, ' ')
+                                // remove space in front of a closing angle bracket
+                                .replace(/ >/g, '>');
+                                //.replace(/\n/g, '<br class="textaposer"/>');
+                            
+                            $scope.$apply(function () {
+                                $scope.html = html;
                             });
+
+                            //$scope.select();
+                            //$content.triggerHandler('input');
+
+                            //$content.find('span').bind('click', function () {
+                            //    $scope.focus(this.id);
+                            //});
                         }
                     }.bind(null, counter), 1);
-                });
+                });*/
 
                 element.children('.mask').bind('scroll', function () {
                     scrollTopBeforePrinting = $(this).scrollTop();
@@ -141,7 +171,7 @@ angular
                     }
                 });
 
-                $scope.compare();
+                //$scope.compare();
 
                 contentHeight = $content.height();
                 $content.css({
@@ -152,6 +182,10 @@ angular
                 scrollTopBeforePrinting = contentHeight;
             },
             restrict: 'E',
+            scope: {
+                digest: '=',
+                selection: '='
+            },
             templateUrl: 'views/textaposer-text.html'
         };
 

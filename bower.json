@@ -1,6 +1,4 @@
 {
-  "name": "textaposer",
-  "version": "0.0.1",
   "dependencies": {
     "angular": "PatternConsulting/bower-angular#v1.2.0rc1",
     "jquery": "~2.0.3",
@@ -12,5 +10,7 @@
   },
   "resolutions": {
     "angular": "v1.2.0rc1"
-  }
+  },
+  "name": "textaposer",
+  "version": "0.0.1"
 }

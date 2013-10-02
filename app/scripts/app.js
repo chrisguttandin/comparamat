@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('textaposer', []);
+angular.module('textaposer', ['chrisguttandin.consistent-contenteditable']);

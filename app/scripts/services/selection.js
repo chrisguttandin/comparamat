@@ -4,10 +4,54 @@ angular
     .module('textaposer')
     .factory('selectionService', function SelectionService() {
 
+        // $(node).parents('.content').length > 0
+        function hasContentAsParent(node) {
+            node = node.parentNode;
+
+            while (node) {
+                if (node.className && node.className.match(/content/)) {
+                    return true;
+                }
+                node = node.parentNode;
+            }
+
+            return false;
+        }
+
+        // $(node).prev().length
+        function prevLength(node) {
+            var length = 0;
+
+            node = node.previousSibling;
+
+            while (node) {
+                if (node.nodeType === 1) {
+                    length += 1;
+                }
+                node = node.previousSibling;
+            }
+
+            return length;
+        }
+
+        // $(node).prevAll().text()
+        function textOfAllPrevious(node) {
+            var text = '';
+            
+            node = node.previousSibling;
+
+            while (node) {
+                text += node.textContent;
+                node = node.previousSibling;
+            }
+
+            return text;
+        }
+
         return {
 
             detect: function () {
-                var $current,
+                var current,
                     range,
                     selection = window.getSelection(),
                     offset;
@@ -17,23 +61,23 @@ angular
                     range = selection.getRangeAt(0);
                     offset = range.startOffset;
 
-                    $current = $(range.startContainer);
+                    current = range.startContainer;
 
                     // check if the range is inside .content
-                    if ($current.parents('div.content').length > 0) {
-                        while (!$current.hasClass('content')) {
-                            offset += $current.prevAll().text().length;
-                            $current = $current.parent();
+                    if (hasContentAsParent(range.startContainer)) {
+                        while (!angular.element(current).hasClass('content')) {
+                            offset += textOfAllPrevious(current).length;
+                            current = current.parentNode;
                         }
                         return {
-                            fragment: $current.parents('li').prev().length,
+                            fragment: prevLength(current.parentNode.parentNode.parentNode),
                             offset: offset
                         };
                     }
                     // check if the range's startContainer is .content itself
-                    if ($current.hasClass('content')) {
+                    if (angular.element(current).hasClass('content')) {
                         return {
-                            fragment: $current.parents('li').prev().length,
+                            fragment: prevLength(current.parentNode.parentNode.parentNode),
                             offset: offset
                         };
                     }
@@ -45,31 +89,40 @@ angular
             },
 
             select: function(selection) {
-                var remainingOffset = selection.offset;
+                var content,
+                    i,
+                    nodes,
+                    nodesLength,
+                    range,
+                    remainingOffset = selection.offset,
+                    startContainer,
+                    textLength;
 
                 if (selection.fragment > -1 && remainingOffset > -1) {
-                    $('x-textaposer-text:eq(' + selection.fragment + ') .content').contents().each(function () {
-                        var length = $(this).text().length,
-                            range,
-                            startContainer;
+                    content = document.getElementsByTagName('x-textaposer-text')[selection.fragment].getElementsByClassName('content')[0];
+                    nodes = content.childNodes;
+                    nodesLength = nodes.length;
 
-                        if (length < remainingOffset) {
-                            remainingOffset -= length;
+                    for (i = 0; i < nodesLength; i += 1) {
+                        startContainer = nodes[i];
+                        textLength = startContainer.textContent.length;
+
+                        if (textLength < remainingOffset) {
+                            remainingOffset -= textLength;
                         } else {
                             range = document.createRange();
-                            startContainer = this;
 
                             while (startContainer.nodeType !== 3) {
-                                startContainer = $(startContainer).contents()[0];
+                                startContainer = startContainer.childNodes[0];
                                 if (startContainer.nodeName === 'BR') {
-                                    startContainer = $(startContainer).parent()[0];
-                                    return;
+                                    startContainer = startContainer.parentNode;
+                                    break;
                                 }
-                                length = $(startContainer).text().length;
+                                length = startContainer.textContent.length;
                                 while (length < remainingOffset) {
                                     remainingOffset -= length;
-                                    startContainer = $(startContainer).next()[0];
-                                    length = $(startContainer).text().length;
+                                    startContainer = startContainer.nextSibling;
+                                    length = startContainer.textContent.length;
                                 }
                             }
                             selection = window.getSelection();
@@ -77,9 +130,10 @@ angular
                             range.collapse(true);
                             selection.removeAllRanges();
                             selection.addRange(range);
-                            return false; // to break the each() loop
+                            content.focus();
+                            break;
                         }
-                    });
+                    }
                 }
             }
 

@@ -4,15 +4,27 @@ angular
     .module('textaposer')
     .factory('exportService', function ExportService() {
 
-        function buildContainer($element) {
-            var container = latex.container();
+        function trim(text) {
+            return text.replace(/^(\s)*/, '').replace(/(\s)*$/, '');
+        }
 
-            $element.each(function () {
-                if (this.className.match(/colored/)) {
-                    var color = $(this).css('background-color'),
-                        name,
-                        result,
-                        values;
+        function buildContainer(spans) {
+            var color,
+                container = latex.container(),
+                i,
+                length,
+                name,
+                result,
+                span,
+                values;
+
+            length = spans.length;
+
+            for (i = 0; i < length; i += 1) {
+                span = spans[i];
+
+                if (span.className.match(/colored/)) {
+                    color = window.getComputedStyle(span).backgroundColor;
 
                     if (/^rgb\([0-9]+, [0-9]+, [0-9]+\)/.test(color)) {
                         result = /^rgb\(([0-9]+), ([0-9]+), ([0-9]+)\)/.exec(color);
@@ -24,25 +36,27 @@ angular
                         return; // unknown color
                     }
 
-                    name = this.className.match(/color\-[a-z]+/)[0].replace(/\-[a-z]/, function (match) {
+                    name = span.className.match(/color\-[a-z]+/)[0].replace(/\-[a-z]/, function (match) {
                         return match[1].toUpperCase();
                     });
 
-                    container.addChild(latex.textcolor($.trim($(this).text()), {
+                    container.addChild(latex.textcolor(trim(span.textContent), {
                         color: {
                             name: name,
                             values: values
                         }
                     }));
                 } else {
-                    container.addChild($.trim($(this).text()));
+                    container.addChild(trim(span.textContent));
                 }
-            });
+            }
+
             return container;
         }
 
         function buildDocument(title, leftColumnTitle, rightColumnTitle, comment) {
-            var l = latex();
+            var l = latex(),
+                texts;
 
             l.utf8 = true;
 
@@ -58,9 +72,12 @@ angular
                 leftColumnTitle,
                 rightColumnTitle
             ]));
+
+            texts = document.getElementsByTagName('x-textaposer-text');
+
             l.addChild(latex.parallel([
-                buildContainer($('x-textaposer-text:eq(0) .content span')),
-                buildContainer($('x-textaposer-text:eq(1) .content span'))
+                buildContainer(texts[0].getElementsByClassName('content')[0].getElementsByTagName('span')),
+                buildContainer(texts[1].getElementsByClassName('content')[0].getElementsByTagName('span'))
             ]));
             l.addChild(latex.paragraph(comment));
 
@@ -70,26 +87,28 @@ angular
         return {
             download: function (title, leftColumnTitle, rightColumnTitle, comment, filename) {
                 var dataURI,
-                    doc = buildDocument(title, leftColumnTitle, rightColumnTitle, comment),
-                    $form;
+                    doc = buildDocument(title, leftColumnTitle, rightColumnTitle, comment);
 
                 dataURI = 'data:application/latex;base64,' + Base64.encode(doc);
 
-                $form = $('<form method="post" action="https://download-data-uri.appspot.com/"></form>');
-                $form.append('<input type="hidden" name="filename" value="' + filename + '">');
-                $form.append('<input type="hidden" name="data" value="' + dataURI + '">');
-                $('body').append($form);
-                $form.submit().remove();
+                document.body.insertAdjacentHTML('beforeend', '<form action="https://download-data-uri.appspot.com/" method="post" name="download">' +
+                    '<input type="hidden" name="filename" value="' + filename + '">' +
+                    '<input type="hidden" name="data" value="' + dataURI + '">' +
+                    '</form>');
+
+                document.forms['download'].submit();
+                document.body.removeChild(document.forms['download']);
             },
             open: function (title, leftColumnTitle, rightColumnTitle, comment) {
-                var doc = buildDocument(title, leftColumnTitle, rightColumnTitle, comment),
-                    $form;
+                var doc = buildDocument(title, leftColumnTitle, rightColumnTitle, comment);
 
-                $form = $('<form action="https://www.writelatex.com/docs" method="post" target="_blank">');
-                $form.append('<textarea name="snip">' + doc + '</textarea>');
-                $form.append('<input checked name="splash" type="checkbox" value="none">');
-                $('body').append($form);
-                $form.submit().remove();
+                document.body.insertAdjacentHTML('beforeend', '<form action="https://www.writelatex.com/docs" method="post" name="open" target="_blank">' +
+                    '<textarea name="snip">' + doc + '</textarea>' +
+                    '<input checked name="splash" type="checkbox" value="none">' +
+                    '</form>');
+
+                document.forms['open'].submit();
+                document.body.removeChild(document.forms['open']);
             }
         };
     });

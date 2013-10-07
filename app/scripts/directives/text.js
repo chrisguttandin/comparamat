@@ -18,7 +18,11 @@ angular
     
                 $scope.$watch('html', function(newValue, oldValue) {
                     $content.find('span').bind('click', function () {
-                        $scope.focus(this.id);
+                        var result = this.className.match(/similarity\-([0-9])+/);
+
+                        if (result) {
+                            $scope.focus(result[1]);
+                        }
                     });
                 });
 

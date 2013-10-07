@@ -8,18 +8,50 @@ angular
             $element.find('input[type=file]').click();
         };
 
+        function getSiblings(node) {
+            var child,
+                children,
+                i,
+                length,
+                siblings;
+
+            children = node.parentNode.childNodes;
+            length = children.length;
+            siblings = [];
+
+            for (i = 0; i < length; i += 1) {
+                child = children[i];
+
+                if (child.nodeType === 1 && child !== node) {
+                    siblings.push(child);
+                }
+            }
+
+            return siblings;
+        }
+
         $scope.focus = function(id) {
-            var $equivalent,
+            var equivalent,
                 fragment,
-                $fragment = $element.find('span[id="' + id + '"]'),
-                $mask;
+                $fragment,
+                i,
+                length,
+                mask,
+                siblings;
+
+            fragment = $element.contents().parent()[0].getElementsByClassName('similarity-' + id)[0];
+            $fragment = angular.element(fragment)
 
             if ($fragment.hasClass('colored')) {
-                fragment = $scope.digest.getFragment(id);
-                $equivalent = $element.parent().siblings().find('span[id="' + id + '"]');
-                $mask = $element.parent().siblings().find('div.mask');
+                siblings = getSiblings($element.contents().parent().parent()[0]);
+                length = siblings.length;
 
-                $mask.scrollTop($mask.scrollTop() - ($fragment.position().top - $equivalent.position().top));
+                for (i = 0; i < length; i += 1) {
+                    equivalent = siblings[i].getElementsByClassName('similarity-' + id)[0];
+                    mask = siblings[i].getElementsByClassName('mask')[0];
+
+                    mask.scrollTop = mask.scrollTop - (fragment.getBoundingClientRect().top - equivalent.getBoundingClientRect().top);
+                }
             }
         };
 

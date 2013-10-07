@@ -150,23 +150,36 @@ angular
                 if (!$scope.comparing) {
                     $scope.comparing = true;
 
-                    var uglyDigests = [];
-                    $('.content').each(function (index) {
-                        var lines = [];
+                    var contents = document.getElementsByClassName('content'),
+                        contentsLength,
+                        divs,
+                        divsLength,
+                        i,
+                        j,
+                        lines,
+                        uglyDigests = [];
 
-                        $(this).find('div').each(function () {
-                            lines.push(                            
+                    contentsLength = contents.length;
+
+                    for (i = 0; i < contentsLength; i += 1) {
+                        lines = [];
+                        divs = contents[i].getElementsByTagName('div');
+                        divsLength = divs.length;
+
+                        for (j = 0; j < divsLength; j += 1) {
+                            lines.push(
                                 new Line([
                                     new Fragment(
-                                        $(this).text(),
+                                        angular.element(divs[j]).text(),
                                         Fragment.NODE_NAME.SPAN
                                     )
                                 ])
                             );
-                        });
+                        }
 
-                        uglyDigests[index] = new Digest(lines);
-                    });
+                        uglyDigests[i] = new Digest(lines);
+                    }
+
                     comparingService.compareDigests(uglyDigests, $scope.length, function(digests) {
                         var element,
                             i,
@@ -176,7 +189,7 @@ angular
                         length = digests.length;
 
                         for (i = 0; i < length; i += 1) {
-                            element = angular.element('<div class="fake-content"><div data-ng-repeat="line in digest.lines"><x-textaposer-fragment data-ng-repeat="fragment in line.fragments" data-ng-switch="fragment.nodeName"><span id="{{fragment.index}}" data-ng-class="{\'color-one\': fragment.color == 1, \'color-two\': fragment.color == 2, \'color-three\': fragment.color == 3, \'color-four\': fragment.color == 4, \'color-five\': fragment.color == 5, \'color-six\': fragment.color == 6, \'colored\': fragment.color > 0}" data-ng-switch-when="span">{{fragment.text}}</span><br data-ng-switch-when="br"/></x-textaposer-fragment></div></div>');
+                            element = angular.element('<div class="fake-content"><div data-ng-repeat="line in digest.lines"><x-textaposer-fragment data-ng-repeat="fragment in line.fragments" data-ng-switch="fragment.nodeName"><span class="similarity-{{fragment.index}}" data-ng-class="{\'color-one\': fragment.color == 1, \'color-two\': fragment.color == 2, \'color-three\': fragment.color == 3, \'color-four\': fragment.color == 4, \'color-five\': fragment.color == 5, \'color-six\': fragment.color == 6, \'colored\': fragment.color > 0}" data-ng-switch-when="span">{{fragment.text}}</span><br data-ng-switch-when="br"/></x-textaposer-fragment></div></div>');
                             scope = $rootScope.$new();
 
                             scope.digest = digests[i];

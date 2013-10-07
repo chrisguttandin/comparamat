@@ -5,7 +5,7 @@ angular
     .directive('textaposerMain', function () {
 
         if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-            $('body').addClass('firefox');
+            document.body.className = 'firefox';
         }
 
         return {

@@ -156,9 +156,7 @@ module.exports = function (grunt) {
           dot: true,
           cwd: '<%= yeoman.app %>',
           dest: '<%= yeoman.dist %>',
-          src: [
-            'scripts/latex.min.js'
-          ]
+          src: []
         }]
       }
     },

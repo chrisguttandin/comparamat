@@ -89,7 +89,7 @@ angular
                 var dataURI,
                     doc = buildDocument(title, leftColumnTitle, rightColumnTitle, comment);
 
-                dataURI = 'data:application/latex;base64,' + Base64.encode(doc);
+                dataURI = 'data:application/latex;base64,' + window.btoa(doc);
 
                 document.body.insertAdjacentHTML('beforeend', '<form action="https://download-data-uri.appspot.com/" method="post" name="download">' +
                     '<input type="hidden" name="filename" value="' + filename + '">' +

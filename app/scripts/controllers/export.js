@@ -11,7 +11,7 @@ angular
         ) {
 
             $scope.download = function () {
-                $scope.exportHidden = true;
+                $scope.hidden = true;
                 exportService.download($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle, $scope.comment, $scope.filename);
             };
 
@@ -24,7 +24,7 @@ angular
             $scope.hidden = true;
 
             $scope.open = function() {
-                $scope.exportHidden = true;
+                $scope.hidden = true;
                 exportService.open($scope.title, $scope.leftColumnTitle, $scope.rightColumnTitle, $scope.comment);
             };
 

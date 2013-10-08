@@ -1,10 +1,10 @@
 <nav>
-    <button class="pure-button" data-ng-click="showExport()">exportieren</button>
+    <button class="button" data-ng-click="showExport()">exportieren</button>
     <div>
         <label for="length">Laufweite:</label>
         <input data-ng-model="length" id="length" type="number">
     </div>
-    <button class="pure-button" data-ng-click="compare()" data-ng-disabled="comparing">jetzt vergleichen</button>
+    <button class="button" data-ng-click="compare()" data-ng-disabled="comparing">jetzt vergleichen</button>
 </nav>
 <h1 class="print-only">{{title}}</h1>
 <h1 class="screen-only">Textaposer</h1>
@@ -16,8 +16,8 @@
 </ul>
 <p class="print-only">{{comment}}</p>
 <footer>
-    <button class="pure-button" data-ng-click="showImprint()">Impressum</button>
-    <a class="pure-button" href="https://docs.google.com/document/d/1ChaPeD37bTV7HEkUizmUmTKbjeV8_DyVgwZxTlfjLDc/edit?usp=sharing">Feedback</a>
+    <button class="button" data-ng-click="showImprint()">Impressum</button>
+    <a class="button" href="https://docs.google.com/document/d/1ChaPeD37bTV7HEkUizmUmTKbjeV8_DyVgwZxTlfjLDc/edit?usp=sharing">Feedback</a>
 </footer>
 <x-textaposer-export data-comment="comment" data-hidden="exportHidden" data-left-column-title="leftColumnTitle" data-right-column-title="rightColumnTitle" data-title="title"></x-textaposer-export>
 <x-textaposer-imprint data-hidden="imprintHidden"></x-textaposer-imprint>

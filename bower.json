@@ -1,8 +1,7 @@
 {
   "dependencies": {
     "angular": "~1.0.8",
-    "angular-consistent-contenteditable": "chrisguttandin/angular-consistent-contenteditable",
-    "pure": "~0.2.1"
+    "angular-consistent-contenteditable": "chrisguttandin/angular-consistent-contenteditable"
   },
   "devDependencies": {
     "angular-mocks": "~1.0.8",

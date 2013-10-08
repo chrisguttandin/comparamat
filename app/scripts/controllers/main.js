@@ -248,8 +248,8 @@ angular
                 new Digest([], []),
                 new Digest([], [])
             ]);
-            $scope.digestList.digests[0].html = '<div>Kopiere die zu vergleichenden Texte in die Textfelder. Identische Passagen werden mit der selben Farbe hinterlegt. Durch einen Klick auf die farbigen Stellen wird die gefundene Übereinstimmung im gegenüberliegenden Feld angezeigt.</div><div>Zeile 2</div><div>Zeile 3</div>';
-            $scope.digestList.digests[1].html = '<div>Das funktioniert schon ganz gut. Identische Passagen werden mit der selben Farbe hinterlegt.</div>';
+            $scope.digestList.digests[0].html = '<div><span>Kopiere die zu vergleichenden Texte in die Textfelder. Identische Passagen werden mit der selben Farbe hinterlegt. Durch einen Klick auf die farbigen Stellen wird die gefundene Übereinstimmung im gegenüberliegenden Feld angezeigt.</span></div><div><span>Zeile 2</span></div><div><span>Zeile 3</span></div>';
+            $scope.digestList.digests[1].html = '<div><span>Das funktioniert schon ganz gut. Identische Passagen werden mit der selben Farbe hinterlegt.</span></div>';
 
             // start with a default of 3 words to be the same
             $scope.length = 3;

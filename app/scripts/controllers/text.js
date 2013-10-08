@@ -5,7 +5,7 @@ angular
     .controller('textaposerTextCtrl', function ($scope, $element, selectionService) {
 
         $scope.clickFileInput = function () {
-            $element.find('input[type=file]').click();
+            $element.contents().parent()[0].getElementsByTagName('input')[0].click();
         };
 
         function getSiblings(node) {

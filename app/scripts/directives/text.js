@@ -36,8 +36,6 @@ angular
                     }
                 });
 
-                //$scope.compare();
-
                 contentHeight = content.getBoundingClientRect().height;
                 $content.css({
                     'margin-bottom': contentHeight + 'px',

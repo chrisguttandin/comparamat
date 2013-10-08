@@ -283,6 +283,7 @@ footer button {
 #imprint-dialog {
     background-color: #FFF;
     margin: 30px auto;
+    min-width: 600px;
     padding: 10px;
     width: 50%;
 }

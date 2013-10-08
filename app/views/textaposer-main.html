@@ -11,7 +11,7 @@
 <h2 class="print-only">{{leftColumnTitle}}</h2><h2 class="print-only">{{rightColumnTitle}}</h2>
 <ul>
     <li data-ng-repeat="digest in digestList.digests">
-        <x-textaposer-text data-digest="digest" data-selection="selection"/>
+        <x-textaposer-text data-digest="digest" data-selection="selection"></x-textaposer-text>
     </li>
 </ul>
 <p class="print-only">{{comment}}</p>
@@ -19,5 +19,5 @@
     <button class="pure-button" data-ng-click="showImprint()">Impressum</button>
     <a class="pure-button" href="https://docs.google.com/document/d/1ChaPeD37bTV7HEkUizmUmTKbjeV8_DyVgwZxTlfjLDc/edit?usp=sharing">Feedback</a>
 </footer>
-<x-textaposer-export data-comment="comment" data-hidden="exportHidden" data-left-column-title="leftColumnTitle" data-right-column-title="rightColumnTitle" data-title="title"/>
-<x-textaposer-imprint data-hidden="imprintHidden"/>
+<x-textaposer-export data-comment="comment" data-hidden="exportHidden" data-left-column-title="leftColumnTitle" data-right-column-title="rightColumnTitle" data-title="title"></x-textaposer-export>
+<x-textaposer-imprint data-hidden="imprintHidden"></x-textaposer-imprint>
